@@ -10,11 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Debug
-      run: |
-        echo "Key is set: ${{ secrets.EC2_SSH_KEY != '' }}"
-        echo "Known hosts is set: ${{ secrets.KNOWN_HOSTS != '' }}"
-    
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
