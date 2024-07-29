@@ -14,18 +14,10 @@ def read_root():
 def read_root():
     return {"TEST": "THING"}
 
-@app.get("/landing")
+@app.get("/landing", response_class=HTMLResponse)
 def read_landing():
-    html_content = """
-    <html>
-        <head>
-            <title>Landing Page</title>
-        </head>
-        <body>
-            <h1>Look ma! HTML!</h1>
-        </body>
-    </html>
-    """
+    with open("content/index.html", 'r') as f:
+        html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
 
 @app.get("/items/{item_id}")
