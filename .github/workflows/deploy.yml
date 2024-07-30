@@ -25,8 +25,11 @@ jobs:
         scp -r ./* $USER@$HOST:/home/admin/build
         ssh $USER@$HOST <<EOF
           cd /home/admin/build
-          docker stop $(docker ps -a -q)
-          docker rm $(docker ps -a -q)
+          CONTAINER_ID=$(docker ps -aqf "name=simpliance")
+          if [ -n "$CONTAINER_ID" ]; then
+            docker stop $CONTAINER_ID
+            docker rm $CONTAINER_ID
+          fi
           docker build -t simpliance_image .
           docker run -d --name=simpliance -p 8000:8000 simpliance_image
         EOF
