@@ -26,9 +26,7 @@ jobs:
         ssh $USER@$HOST <<EOF
           cd /home/admin/build
           CONTAINER_ID=$(docker ps -aqf "name=simpliance")
-          echo "before container id"
-          echo $CONTAINER_ID
-          echo "after container id"
+          docker ps -a
           if [ -n "$CONTAINER_ID" ]; then
             docker stop $CONTAINER_ID
             docker rm $CONTAINER_ID
