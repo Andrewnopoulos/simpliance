@@ -22,12 +22,11 @@ jobs:
         HOST: ${{ secrets.HOST }}
         USER: ${{ secrets.USER }}
       run: |
-        scp -r ./* $USER@$HOST:/home/ubuntu/src
+        scp -r ./* $USER@$HOST:/home/admin/build
         ssh $USER@$HOST <<EOF
-          cd /home/ubuntu/src
-          python3 -m venv .env
-          source .env/bin/activate
-          pip3 install -r requirements.txt
-          sudo systemctl restart fastapi-app
-          deactivate
+          cd /home/admin/build
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)
+          docker build -t simpliance_image .
+          docker run -d --name simpliance -p 80:80 simpliance_image
         EOF

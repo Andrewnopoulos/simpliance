@@ -16,7 +16,7 @@ def read_root():
 
 @app.get("/landing", response_class=HTMLResponse)
 def read_landing():
-    with open("content/index.html", 'r') as f:
+    with open("content/new.html", 'r') as f:
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
 
