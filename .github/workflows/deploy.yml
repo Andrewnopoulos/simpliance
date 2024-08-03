@@ -7,8 +7,30 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      AWS_INSTANCE_SG_ID: ${{ secrets.SECURITY_GROUP_ID }}
+
     steps:
     - uses: actions/checkout@v2
+
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: get runner ip address
+      id: ip
+      uses: haythem/public-ip@v1.2
+
+    - name: whitelist runner ip address
+      run: |
+        aws ec2 authorize-security-group-ingress \
+          --group-id $AWS_INSTANCE_SG_ID \
+          --protocol tcp \
+          --port 22 \
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -16,7 +38,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace
-    
+
     - name: Deploy to EC2
       env:
         HOST: ${{ secrets.HOST }}
@@ -32,3 +54,11 @@ jobs:
 
           docker compose up -d
         EOF
+
+    - name: revoke runner ip address
+      run: |
+        aws ec2 revoke-security-group-ingress \
+          --group-id $AWS_INSTANCE_SG_ID \
+          --protocol tcp \
+          --port 22 \
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
