@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12
 
 RUN apt-get update
 RUN /bin/sh -c "$(curl -fsSL https://powerpipe.io/install/powerpipe.sh)"
@@ -6,6 +6,8 @@ RUN /bin/sh -c "$(curl -fsSL https://powerpipe.io/install/powerpipe.sh)"
 RUN mkdir pp
 
 WORKDIR /pp
+
+RUN powerpipe -v
 RUN powerpipe mod init
 RUN powerpipe mod install github.com/turbot/steampipe-mod-aws-compliance
 

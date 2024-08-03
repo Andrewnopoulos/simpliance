@@ -1,0 +1,35 @@
+
+services:
+  main:
+    build:
+      context: .
+      dockerfile: docker/main.Dockerfile
+    container_name: main-container
+    ports:
+      - "80:8000" # Expose port 80 of app1 to port 8000 on the host
+    networks:
+      - app-network
+    volumes:
+      - volume-1:/aws_connections
+      - volume-2:/aws_credentials
+
+  steampipe:
+    build:
+      context: .
+      dockerfile: docker/steampipe.Dockerfile
+    container_name: steampipe-container
+    ports:
+      - "9193:9193" # Expose port 9193
+    networks:
+      - app-network
+    volumes:
+      - volume-1:/home/andrew/.steampipe/config/
+      - volume-2:/home/andrew/.aws/
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  volume-1:
+  volume-2:

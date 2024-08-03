@@ -1,6 +1,51 @@
 # simpliance
 making compliance simple
 
+## Pushing creds to steampipe
+
+`~/.aws/credentials`
+Defines credentials to accounts
+```
+# This user must have sts:AssumeRole permission for arn:aws:iam::*:role/spc_role
+[cli_user]
+aws_access_key_id = AKIA4YFAKEKEYXTDS252
+aws_secret_access_key = SH42YMW5p3EThisIsNotRealzTiEUwXN8BOIOF5J8m
+
+[account_a_role_without_mfa]
+role_arn = arn:aws:iam::111111111111:role/spc_role
+source_profile = cli_user
+external_id = xxxxx
+
+[account_b_role_without_mfa]
+role_arn = arn:aws:iam::222222222222:role/spc_role
+source_profile = cli_user
+external_id = yyyyy
+```
+
+`~/.steampipe/config/aws.spc`
+
+Defines connections
+```
+connection "aws_account_a" {
+  plugin  = "aws"
+  profile = "account_a_role_without_mfa"
+  regions = ["us-east-1", "us-east-2"]
+}
+
+connection "aws_account_b" {
+  plugin  = "aws"
+  profile = "account_b_role_without_mfa"
+  regions = ["us-east-1", "us-east-2"]
+}
+```
+
+Need to have both files as volumes. Read/write can be done by the python app.
+
+## TODO
+
+- Push the aws credentials to the steampipe container during build
+- Implementation for adding/removing linked AWS profiles
+
 ## How's it gonna go?
 
 - Benchmark request from a client comes in
@@ -22,6 +67,7 @@ making compliance simple
   - One container runs steampipe
   - other container runs powerpipe + fastapi
   - Docker compose for deployment
+
 
 ## Connect to host
 
