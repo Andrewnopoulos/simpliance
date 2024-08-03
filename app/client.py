@@ -32,6 +32,8 @@ def run_benchmark(item_id: str, benchmark_name: str, search_path_prefix: str = N
     # Construct the output file path
     output_file = os.path.join(results_dir, f"{item_id}.html")
 
+    powerpipe_directory = "/pp"
+
     # Construct the command
     command = f"powerpipe benchmark run {benchmark_name} --output html"
     if search_path_prefix:
@@ -40,7 +42,7 @@ def run_benchmark(item_id: str, benchmark_name: str, search_path_prefix: str = N
     command += f" > {output_file}"
 
     try:
-        subprocess.run(command, shell=True, check=True)
+        subprocess.run(command, cwd=powerpipe_directory, shell=True, check=True)
         print(f"Benchmark results saved to {output_file}")
     except subprocess.CalledProcessError as e:
         print(f"Error running benchmark: {e}")
