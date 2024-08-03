@@ -1,6 +1,6 @@
 
 services:
-  main:
+  app-host:
     build:
       context: .
       dockerfile: docker/main.Dockerfile
@@ -13,13 +13,11 @@ services:
       - volume-1:/aws_connections
       - volume-2:/aws_credentials
 
-  steampipe:
+  steampipe-host:
     build:
       context: .
       dockerfile: docker/steampipe.Dockerfile
     container_name: steampipe-container
-    ports:
-      - "9193:9193" # Expose port 9193
     networks:
       - app-network
     volumes:

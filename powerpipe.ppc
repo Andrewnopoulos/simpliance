@@ -1,0 +1,8 @@
+workspace "default" {
+  update_check  = true
+  log_level     = "info"
+  listen        = "network"
+  benchmark_timeout = "60"
+  database = "postgres://steampipe:password@steampipe-host:9193/steampipe"
+
+}
