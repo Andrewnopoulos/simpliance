@@ -41,7 +41,7 @@ def read_landing():
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
-@app.post("/generate")
+@app.get("/generate")
 def generate_report():
     return worker.put("My_info")
 
@@ -53,7 +53,7 @@ def get_all_reports():
 def get_report(task_id: str):
     if task_id in task_states:
         if task_states[task_id] == "done":
-            filename = os.path.join("results", f"{task_id}.html")
+            filename = os.path.join("/results", f"{task_id}.html")
             try:
                 with open(filename, 'r') as f:
                     html_content = f.read()

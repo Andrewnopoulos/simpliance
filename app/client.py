@@ -26,7 +26,7 @@ def run_benchmark(item_id: str, benchmark_name: str, search_path_prefix: str = N
         return
 
     # Create the 'results' directory if it doesn't exist
-    results_dir = 'results'
+    results_dir = '/results'
     os.makedirs(results_dir, exist_ok=True)
 
     # Construct the output file path
