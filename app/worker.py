@@ -21,14 +21,14 @@ class Worker(threading.Thread):
     def run(self):
         while True:
             id, item = self.q.get()
+            if (item == "quit"):
+                return
             self.task_states[id] = "progress"
             print(f'Working on {id} - {item}')
             print(f'Finished {item}')
             run_benchmark(id, 'aws_compliance.benchmark.cis_v300')
             self.q.task_done()
             self.task_states[id] = "done"
-            if (item == "quit"):
-                return
             time.sleep(1)
 
 
