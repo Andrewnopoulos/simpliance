@@ -6,7 +6,7 @@ services:
       dockerfile: docker/main.Dockerfile
     container_name: main-container
     ports:
-      - "80:8000" # Expose port 80 of app1 to port 8000 on the host
+      - "8000:8000" # Expose port 80 of app1 to port 8000 on the host
     networks:
       - app-network
     volumes:
