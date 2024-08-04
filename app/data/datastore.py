@@ -35,12 +35,15 @@ class Storage():
     def get_all(self, item: Type[RootObject]) -> list:
         query = f"SELECT * from {item.table()};"
         return self._execute_query(query, item)
+    
+    def delete(self, item: RootObject) -> int:
+        where_clause = ' AND '.join([f"{field} = ?" for field in item.fields()])
+        query = f"DELETE FROM {item.table()} WHERE {where_clause}"
+        print (query)
+        print(item)
+        return self._execute_modification(query, item)
 
     def insert(self, obj: RootObject) -> int:
-        print("Object")
-        print(f"table: {obj.table()}")
-        print(f"fields: {obj.fields()}")
-        print(f"values: {obj.astuple()}")
         columns = ', '.join(obj.fields())
         placeholders = ', '.join(['?' for _ in obj.fields()])
         query = f"INSERT INTO {obj.table()} ({columns}) VALUES ({placeholders})"
@@ -56,6 +59,24 @@ if __name__ == "__main__":
     with Storage(db_path) as storage:
         u = User("Andy", str(uuid.uuid4()))
         storage.insert(u)
+        k = AuthKeys("role", "extern", u.id)
+        storage.insert(k)
         all_users = storage.get_all(u)
         print(all_users)
+        all_keys = storage.get_all(AuthKeys)
+        print(all_keys)
 
+        k = AuthKeys("doasifj", "osdijf", u.id)
+        storage.delete(k)
+
+        for k in all_keys:
+            storage.delete(k)
+
+        all_keys = storage.get_all(AuthKeys)
+        print(all_keys)
+
+        for u in all_users:
+            storage.delete(u)
+
+        all_users = storage.get_all(u)
+        print(all_users)

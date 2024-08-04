@@ -7,6 +7,14 @@ class RootObject():
         return tup(self)
     def fields(self):
         return tuple([f.name for f in fiel(self)])
+    # def id(self) -> str:
+    #     return "0"
+
+    def get(self, field: str):
+        try:
+            return self.__getattribute__(field)
+        except AttributeError:
+            return None
     
     @staticmethod
     def row_factory(cursor, row):
@@ -50,8 +58,8 @@ class Report(RootObject):
 
 @dataclass
 class User(RootObject):
-    name: str
     id: str
+    name: str
 
     @staticmethod
     def row_factory(cursor, row):
