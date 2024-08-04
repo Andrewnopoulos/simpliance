@@ -12,6 +12,7 @@ services:
     volumes:
       - volume-1:/aws_connections
       - volume-2:/aws_credentials
+      - volume-3:/code/db
 
   steampipe-host:
     build:
@@ -31,3 +32,4 @@ networks:
 volumes:
   volume-1:
   volume-2:
+  volume-3:
