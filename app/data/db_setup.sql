@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS reports (
     id TEXT PRIMARY KEY,
     process_state TEXT NOT NULL,
     datetime_started TEXT NOT NULL,
-    datetime_completed TEXT,
+    datetime_completed TEXT NOT NULL,
     user_id TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

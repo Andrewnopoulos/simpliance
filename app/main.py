@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from worker import Worker
+from data.datastore import create_schema, Storage
 
 task_states = {}
 worker = Worker(task_states)
@@ -14,6 +15,7 @@ worker = Worker(task_states)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     ## Do setup
+    create_schema()
     worker.daemon = True
     worker.start()
     yield
