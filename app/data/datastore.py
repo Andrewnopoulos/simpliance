@@ -44,19 +44,22 @@ class Storage():
         query = f"DELETE FROM {item.table()} WHERE {where_clause}"
         return self._execute_modification(query, item.astuple())
     
-    def update(self, item: RootObject, fields_to_update: list[str]) -> int:
-        update_fields_copy = fields_to_update.copy()
+    def update(self, item: RootObject, fields_to_update: list[str] = []) -> int:
+        if fields_to_update:
+            dirty_fields = fields_to_update.copy()
+        else:
+            dirty_fields = item._dirty
         all_fields = item.fields()
         update_fields = []
         search_fields = []
         for field in all_fields:
-            if field in update_fields_copy:
+            if field in dirty_fields:
                 update_fields.append(field)
-                update_fields_copy.remove(field)
+                dirty_fields.remove(field)
             else:
                 search_fields.append(field)
-        if update_fields_copy:
-            print(f"These fields were not found: {update_fields_copy}")
+        if dirty_fields:
+            print(f"These fields were not found: {dirty_fields}")
         if not update_fields:
             print("Updating nothing")
             return
@@ -103,9 +106,13 @@ if __name__ == "__main__":
         reports = storage.get_all(Report)
         print(reports)
 
-        r.datetime_completed = pendulum.now().to_iso8601_string()
-        modified_count = storage.update(r, ["datetime_completed"])
+        r.set('datetime_completed', pendulum.now().to_iso8601_string())
+
+        # r.datetime_completed = pendulum.now().to_iso8601_string()
+        print(r._dirty)
+        modified_count = storage.update(r)
         print(f"modified rows: {modified_count}")
+        print(r._dirty)
 
         reports = storage.get_all(Report)
         print(reports)
