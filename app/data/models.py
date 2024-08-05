@@ -36,10 +36,9 @@ class RootObject():
         except AttributeError:
             return None
     
-    @staticmethod
-    def row_factory(cursor, row):
-        print("Base row factory whoopsie")
-        return row
+    @classmethod
+    def row_factory(cls, cursor, row):
+        return cls(*row)
 
     @staticmethod
     def table():
@@ -56,10 +55,6 @@ class AuthKeys(RootObject):
     user_id: str
 
     @staticmethod
-    def row_factory(cursor, row):
-        return AuthKeys(*row)
-    
-    @staticmethod
     def table():
         return "auth_keys"
     
@@ -75,10 +70,6 @@ class Report(RootObject):
     datetime_started: str
     datetime_completed: str
     user_id: str
-
-    @staticmethod
-    def row_factory(cursor, row):
-        return Report(*row)
     
     @staticmethod
     def table():
@@ -92,10 +83,6 @@ class Report(RootObject):
 class User(RootObject):
     id: str
     name: str
-
-    @staticmethod
-    def row_factory(cursor, row):
-        return User(*row)
     
     @staticmethod
     def table():
