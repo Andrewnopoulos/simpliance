@@ -1,9 +1,13 @@
 from dataclasses import dataclass, astuple as tup, fields as fiel, field
+from typing import Any
 
 @dataclass
 class RootObject():
 
     _dirty : list = field(default_factory=list, compare=False, repr=False, kw_only=True)
+
+    def __post_init__(self):
+        self._dirty = []
 
     def astuple(self):
         # First element is _dirty list which we want to ignore, so pop it
@@ -14,14 +18,15 @@ class RootObject():
         # Don't include _dirty in fields
         return tuple([f.name for f in fiel(self) if f.name != '_dirty'])
     
-    def set(self, field, value):
-        try:
-            self.__setattr__(field, value)
-            print(self._dirty)
-            if field not in self._dirty:
-                self._dirty.append(field)
-        except AttributeError:
-            print(f"{field} not found in object")
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name != '_dirty':
+            try:
+                if name not in self._dirty:
+                    self._dirty.append(name)
+            except AttributeError:
+                print("no dirty")
+            
+        super().__setattr__(name, value)
 
     def get(self, field: str):
         try:

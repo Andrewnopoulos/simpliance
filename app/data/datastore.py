@@ -58,12 +58,10 @@ class Storage():
                 dirty_fields.remove(field)
             else:
                 search_fields.append(field)
-        if dirty_fields:
-            print(f"These fields were not found: {dirty_fields}")
         if not update_fields:
             print("Updating nothing")
             return
-        
+
         set_clause = ', '.join([f"{field} = ?" for field in update_fields])
         where_clause = ' AND '.join([f"{field} = ?" for field in search_fields])
         query = f"UPDATE {item.table()} SET {set_clause} WHERE {where_clause}"
@@ -76,7 +74,7 @@ class Storage():
         query = f"INSERT INTO {item.table()} ({columns}) VALUES ({placeholders})"
         return self._execute_modification(query, item.astuple())
 
-if __name__ == "__main__":
+def test():
 
     db_path = 'test.db'
     create_schema(db_path)
@@ -106,7 +104,7 @@ if __name__ == "__main__":
         reports = storage.get_all(Report)
         print(reports)
 
-        r.set('datetime_completed', pendulum.now().to_iso8601_string())
+        r.datetime_completed = pendulum.now().to_iso8601_string()
 
         # r.datetime_completed = pendulum.now().to_iso8601_string()
         print(r._dirty)
@@ -118,17 +116,34 @@ if __name__ == "__main__":
         print(reports)
 
 
-        # k = AuthKeys("doasifj", "osdijf", u.id)
-        # storage.delete(k)
+        k = AuthKeys("doasifj", "osdijf", u.id)
+        storage.delete(k)
 
-        # for k in all_keys:
-        #     storage.delete(k)
+        for k in all_keys:
+            storage.delete(k)
 
-        # all_keys = storage.get_all(AuthKeys)
-        # print(all_keys)
+        all_keys = storage.get_all(AuthKeys)
+        print(all_keys)
 
-        # for u in all_users:
-        #     storage.delete(u)
+        for u in all_users:
+            storage.delete(u)
 
-        # all_users = storage.get_all(u)
-        # print(all_users)
+        all_users = storage.get_all(u)
+        print(all_users)
+
+def test1():
+    db_path = 'test.db'
+    create_schema(db_path)
+
+    import uuid
+
+    with Storage(db_path) as storage:
+        u = User(str(uuid.uuid4()), "Andy")
+
+        print("dirty")
+        print(u._dirty)
+        print(u)
+
+
+if __name__ == "__main__":
+    test()
