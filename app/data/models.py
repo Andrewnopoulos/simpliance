@@ -14,9 +14,11 @@ class RootObject():
         list_form = list(tup(self))
         list_form.pop(0)
         return tuple(list_form)
-    def fields(self):
+
+    @classmethod
+    def fields(cls):
         # Don't include _dirty in fields
-        return tuple([f.name for f in fiel(self) if f.name != '_dirty'])
+        return tuple([f.name for f in fiel(cls) if f.name != '_dirty'])
     
     def __setattr__(self, name: str, value: Any) -> None:
         if name != '_dirty':
@@ -42,6 +44,10 @@ class RootObject():
     @staticmethod
     def table():
         return "ERROR"
+    
+    @staticmethod
+    def primary() -> list[str]:
+        return []
 
 @dataclass
 class AuthKeys(RootObject):
@@ -56,6 +62,10 @@ class AuthKeys(RootObject):
     @staticmethod
     def table():
         return "auth_keys"
+    
+    @staticmethod
+    def primary() -> list[str]:
+        return ['role_id', 'external_id', 'user_id']
     
 
 @dataclass
@@ -74,6 +84,10 @@ class Report(RootObject):
     def table():
         return "reports"
 
+    @staticmethod
+    def primary() -> list[str]:
+        return ['id']
+
 @dataclass
 class User(RootObject):
     id: str
@@ -86,3 +100,7 @@ class User(RootObject):
     @staticmethod
     def table():
         return "users"
+    
+    @staticmethod
+    def primary() -> list[str]:
+        return ['id']

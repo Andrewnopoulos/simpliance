@@ -34,10 +34,27 @@ class Storage():
             cursor = conn.cursor()
             cursor.execute(query)
             return cursor.fetchall()
+    
+    def _execute_single(self, query:str, item: Type[RootObject], parameters: tuple) -> RootObject:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = item.row_factory
+            cursor = conn.cursor()
+            cursor.execute(query, parameters)
+            return cursor.fetchone()
         
     def get_all(self, item: Type[RootObject]) -> list:
         query = f"SELECT * from {item.table()};"
         return self._execute_query(query, item)
+    
+    def get_one(self, item_type: Type[RootObject], search_dict: dict) -> RootObject:
+        # Regular dicts _should_ be ordered, but just in case:
+        # Note that we are assuming it's ordered when fetching keys and values
+        where_clause = ' AND '.join([f"{field} = ?" for field in search_dict.keys() if field in item_type.fields()])
+        item = tuple(search_dict.values())
+        if not where_clause:
+            return None
+        query = f"SELECT * from {item_type.table()} WHERE {where_clause}"
+        return self._execute_single(query, item_type, item)
     
     def delete(self, item: RootObject) -> int:
         where_clause = ' AND '.join([f"{field} = ?" for field in item.fields()])
@@ -144,6 +161,33 @@ def test1():
         print(u._dirty)
         print(u)
 
+def test2():
+    db_path = 'test.db'
+    create_schema(db_path)
+
+    import uuid
+
+    with Storage(db_path) as storage:
+        u = User(str(uuid.uuid4()), "Andy")
+
+        storage.insert(u)
+
+        retval = storage.get_one(User, {'name': 'Andy'})
+        print(retval)
+
+        retval = storage.get_one(User, {'id': u.id})
+        print(retval)
+
+        retval = storage.get_one(User, {})
+        print(retval)
+
+        retval = storage.get_one(User, {'id': 'sodifjds'})
+        print(retval)
+
+        retval = storage.get_one(User, {'sodifj': 'dsoifj'})
+        print(retval)
+    
+
 
 if __name__ == "__main__":
-    test()
+    test2()

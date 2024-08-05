@@ -10,6 +10,7 @@ from worker import Worker
 from data.datastore import create_schema, Storage
 
 task_states = {}
+storage = Storage()
 worker = Worker(task_states)
 
 @asynccontextmanager
