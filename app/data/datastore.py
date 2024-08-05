@@ -1,6 +1,6 @@
 import sqlite3
 from typing import Type
-from models import RootObject, User, AuthKeys, Report
+from .models import RootObject, User, AuthKeys, Report
 import pendulum
 
 DEFAULT_DB_PATH = '/code/db/main.db'

@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from contextlib import asynccontextmanager
 from typing import Union
@@ -8,20 +9,23 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from worker import Worker
 from data.datastore import create_schema, Storage
+from data.models import Report, User, AuthKeys
 
-task_states = {}
-storage = Storage()
-worker = Worker(task_states)
+DB_PATH = os.environ["DB_PATH"]
+RESULTS_PATH = os.environ["RESULTS_PATH"]
+
+storage = Storage(DB_PATH)
+worker = Worker(storage)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     ## Do setup
-    create_schema()
+    create_schema(DB_PATH)
     worker.daemon = True
     worker.start()
     yield
     ## Do cleanup
-    worker.put("quit")
+    worker.exit()
     worker.join()
 
 app = FastAPI(lifespan=lifespan)
@@ -46,23 +50,27 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @app.get("/generate")
 def generate_report():
-    return worker.put("My_info")
+    new_user = User(str(uuid.uuid4()), "Andrew")
+    storage.insert(new_user)
+    return worker.put(new_user, "test_benchmark")
 
 @app.get("/reports")
 def get_all_reports():
-    return task_states
+    return storage.get_all(Report)
 
 @app.get("/reports/{task_id}")
 def get_report(task_id: str):
-    if task_id in task_states:
-        if task_states[task_id] == "done":
-            filename = os.path.join("/results", f"{task_id}.html")
-            try:
-                with open(filename, 'r') as f:
-                    html_content = f.read()
-                return HTMLResponse(content=html_content, status_code=200)
-            except:
-                return JSONResponse({"error": f"Failed to find {filename}"})
-        return {"state": task_states[task_id]}
-    else:
+    task = storage.get_one(Report, {'id': task_id})
+    if not task:
         return HTMLResponse(None, status_code=404)
+    if task.process_state == "done":
+        filename = os.path.join(RESULTS_PATH, f"{task_id}.html")
+        print(f"searching for {filename}")
+        try:
+            with open(filename, 'r') as f:
+                html_content = f.read()
+            return HTMLResponse(content=html_content, status_code=200)
+        except:
+            return JSONResponse({"error": f"Failed to find {filename}"})
+    else:
+        return task

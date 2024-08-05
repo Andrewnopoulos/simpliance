@@ -7,6 +7,9 @@ services:
     container_name: main-container
     ports:
       - "8000:8000" # Expose port 8000 of app1 to port 8000 on the host
+    environment:
+      DB_PATH: "/code/db/main.db"
+      RESULTS_PATH: "/code/results"
     networks:
       - app-network
     volumes:

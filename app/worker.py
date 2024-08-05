@@ -21,19 +21,33 @@ class Worker(threading.Thread):
         self.storage.insert(new_report)
         self.q.put((task_id, benchmark_type))
         return {"task_id": task_id}
+    
+    def exit(self):
+        self.q.put((None, 'quit'))
 
     def run(self):
         while True:
             id, item = self.q.get()
             if (item == "quit"):
                 return
-            # report = Storage
-            self.task_states[id] = "progress"
+            report = self.storage.get_one(Report, {'id': id})
+            if not report:
+                print(f"error fetching report with id {id}")
+                self.storage.delete(report)
+                self.q.task_done()
+                time.sleep(1)
+                continue
+
+            report.process_state = "progress"
+            self.storage.update(report)
             print(f'Working on {id} - {item}')
-            run_benchmark(id, 'aws_compliance.benchmark.cis_v300')
+            # run_benchmark(id, 'aws_compliance.benchmark.cis_v300')
+            run_benchmark(id, item)
             print(f'Finished {item}')
             self.q.task_done()
-            self.task_states[id] = "done"
+            report.process_state = "done"
+            report.datetime_completed = pendulum.now().to_iso8601_string()
+            self.storage.update(report)
             time.sleep(1)
 
 
