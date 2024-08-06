@@ -56,7 +56,7 @@ def generate_report():
 
 @app.get("/reports")
 def get_all_reports():
-    return storage.get_all(Report)
+    return [r.dict() for r in storage.get_all(Report)]
 
 @app.get("/reports/{task_id}")
 def get_report(task_id: str):

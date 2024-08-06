@@ -1,10 +1,11 @@
 from dataclasses import dataclass, astuple as tup, fields as fiel, field
-from typing import Any
+from typing import Any, ClassVar
 
 @dataclass
 class RootObject():
 
     _dirty : list = field(default_factory=list, compare=False, repr=False, kw_only=True)
+    _table : ClassVar[str] = ""
 
     def __post_init__(self):
         self._dirty = []
@@ -36,13 +37,14 @@ class RootObject():
         except AttributeError:
             return None
     
+    def dict(self):
+        representation = self.__dict__.copy()
+        del representation['_dirty']
+        return representation
+    
     @classmethod
     def row_factory(cls, cursor, row):
         return cls(*row)
-
-    @staticmethod
-    def table():
-        return "ERROR"
     
     @staticmethod
     def primary() -> list[str]:
@@ -50,13 +52,11 @@ class RootObject():
 
 @dataclass
 class AuthKeys(RootObject):
+    _table = "auth_keys"
+
     role_id: str
     external_id: str
     user_id: str
-
-    @staticmethod
-    def table():
-        return "auth_keys"
     
     @staticmethod
     def primary() -> list[str]:
@@ -65,15 +65,13 @@ class AuthKeys(RootObject):
 
 @dataclass
 class Report(RootObject):
+    _table = "reports"
+
     id: str
     process_state: str
     datetime_started: str
     datetime_completed: str
     user_id: str
-    
-    @staticmethod
-    def table():
-        return "reports"
 
     @staticmethod
     def primary() -> list[str]:
@@ -81,12 +79,10 @@ class Report(RootObject):
 
 @dataclass
 class User(RootObject):
+    _table = "users"
+
     id: str
     name: str
-    
-    @staticmethod
-    def table():
-        return "users"
     
     @staticmethod
     def primary() -> list[str]:

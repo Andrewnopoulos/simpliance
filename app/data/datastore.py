@@ -43,7 +43,7 @@ class Storage():
             return cursor.fetchone()
         
     def get_all(self, item: Type[RootObject]) -> list:
-        query = f"SELECT * from {item.table()};"
+        query = f"SELECT * from {item._table};"
         return self._execute_query(query, item)
     
     def get_one(self, item_type: Type[RootObject], search_dict: dict) -> RootObject:
@@ -53,12 +53,12 @@ class Storage():
         item = tuple(search_dict.values())
         if not where_clause:
             return None
-        query = f"SELECT * from {item_type.table()} WHERE {where_clause}"
+        query = f"SELECT * from {item_type._table} WHERE {where_clause}"
         return self._execute_single(query, item_type, item)
     
     def delete(self, item: RootObject) -> int:
         where_clause = ' AND '.join([f"{field} = ?" for field in item.fields()])
-        query = f"DELETE FROM {item.table()} WHERE {where_clause}"
+        query = f"DELETE FROM {item._table} WHERE {where_clause}"
         return self._execute_modification(query, item.astuple())
     
     def update(self, item: RootObject, fields_to_update: list[str] = []) -> int:
@@ -81,14 +81,14 @@ class Storage():
 
         set_clause = ', '.join([f"{field} = ?" for field in update_fields])
         where_clause = ' AND '.join([f"{field} = ?" for field in search_fields])
-        query = f"UPDATE {item.table()} SET {set_clause} WHERE {where_clause}"
+        query = f"UPDATE {item._table} SET {set_clause} WHERE {where_clause}"
         all_values = tuple(item.get(field) for field in update_fields) + tuple(item.get(field) for field in search_fields)
         return self._execute_modification(query, all_values)
 
     def insert(self, item: RootObject) -> int:
         columns = ', '.join(item.fields())
         placeholders = ', '.join(['?' for _ in item.fields()])
-        query = f"INSERT INTO {item.table()} ({columns}) VALUES ({placeholders})"
+        query = f"INSERT INTO {item._table} ({columns}) VALUES ({placeholders})"
         return self._execute_modification(query, item.astuple())
 
 def test():
@@ -191,3 +191,4 @@ def test2():
 
 if __name__ == "__main__":
     test2()
+    # test()
