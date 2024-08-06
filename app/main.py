@@ -11,6 +11,8 @@ from worker import Worker
 from data.datastore import create_schema, Storage
 from data.models import Report, User, AuthKeys
 
+from routes import authkeys_router, user_router, report_router
+
 DB_PATH = os.environ["DB_PATH"]
 RESULTS_PATH = os.environ["RESULTS_PATH"]
 
@@ -29,6 +31,11 @@ async def lifespan(app: FastAPI):
     worker.join()
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(authkeys_router)
+app.include_router(report_router)
+app.include_router(user_router)
+
 
 @app.get("/")
 def read_root():

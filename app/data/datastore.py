@@ -35,6 +35,13 @@ class Storage():
             cursor = conn.cursor()
             cursor.execute(query)
             return cursor.fetchall()
+
+    def _execute_query_params(self, query: str, item: Type[RootObject], parameters: tuple) -> list:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = item.row_factory
+            cursor = conn.cursor()
+            cursor.execute(query, parameters)
+            return cursor.fetchall()
     
     def _execute_single(self, query:str, item: Type[RootObject], parameters: tuple) -> RootObject:
         with sqlite3.connect(self.db_path) as conn:
@@ -46,6 +53,16 @@ class Storage():
     def get_all(self, item: Type[RootObject]) -> list:
         query = f"SELECT * from {item._table};"
         return self._execute_query(query, item)
+    
+    def get_where(self, item_type: Type[RootObject], search_dict: dict) -> list:
+        # Regular dicts _should_ be ordered, but just in case:
+        # Note that we are assuming it's ordered when fetching keys and values
+        where_clause = ' AND '.join([f"{field} = ?" for field in search_dict.keys() if field in item_type.fields()])
+        item = tuple(search_dict.values())
+        if not where_clause:
+            return None
+        query = f"SELECT * from {item_type._table} WHERE {where_clause}"
+        return self._execute_query_params(query, item_type, item)
     
     def get_one(self, item_type: Type[RootObject], search_dict: dict) -> RootObject:
         # Regular dicts _should_ be ordered, but just in case:

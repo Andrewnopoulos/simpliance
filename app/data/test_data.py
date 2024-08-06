@@ -53,6 +53,15 @@ class TestDataStore(unittest.TestCase):
             new_r = s.get_one(Report, {'id': r.id})
             self.assertIsNone(new_r)
     
+    def test_get_where(self):
+        with Storage('test.db') as s:
+            u = User(str(uuid.uuid4()), "landy")
+            s.insert(u)
+            u = User(str(uuid.uuid4()), "landy")
+            s.insert(u)
+            users = s.get_where(User, {'name': "landy"})
+            self.assertEqual(len(users), 2)
+    
     def test_dirty(self):
         with Storage('test.db') as s:
             u = User('a', 'b')
