@@ -4,10 +4,11 @@ from .models import RootObject, User, AuthKeys, Report
 import pendulum
 
 DEFAULT_DB_PATH = '/code/db/main.db'
+DEFAULT_SETUP_PATH = 'db_setup.sql'
 
-def create_schema(db_path=DEFAULT_DB_PATH):
-    with sqlite3.connect(db_path) as conn:
-        with open('db_setup.sql', 'r') as sql_file:
+def create_schema(db_dest_path=DEFAULT_DB_PATH, db_setup_script_path=DEFAULT_SETUP_PATH):
+    with sqlite3.connect(db_dest_path) as conn:
+        with open(db_setup_script_path, 'r') as sql_file:
             sql_script = sql_file.read()
         conn.executescript(sql_script)
 
@@ -89,106 +90,7 @@ class Storage():
         columns = ', '.join(item.fields())
         placeholders = ', '.join(['?' for _ in item.fields()])
         query = f"INSERT INTO {item._table} ({columns}) VALUES ({placeholders})"
-        return self._execute_modification(query, item.astuple())
-
-def test():
-
-    db_path = 'test.db'
-    create_schema(db_path)
-
-    import uuid
-
-    with Storage(db_path) as storage:
-        u = User(str(uuid.uuid4()), "Andy")
-        storage.insert(u)
-        k = AuthKeys("role", "extern", u.id)
-        storage.insert(k)
-        all_users = storage.get_all(u)
-        print(all_users)
-        all_keys = storage.get_all(AuthKeys)
-        print(all_keys)
-
-        reports = storage.get_all(Report)
-        for r in reports:
-            storage.delete(r)
-        
-        reports = storage.get_all(Report)
-        print(f"reports: {len(reports)}")
-
-        r = Report(str(uuid.uuid4()), "in-progress", pendulum.now().to_iso8601_string(), '', u.id)
-        storage.insert(r)
-
-        reports = storage.get_all(Report)
-        print(reports)
-
-        r.datetime_completed = pendulum.now().to_iso8601_string()
-
-        # r.datetime_completed = pendulum.now().to_iso8601_string()
-        print(r._dirty)
-        modified_count = storage.update(r)
-        print(f"modified rows: {modified_count}")
-        print(r._dirty)
-
-        reports = storage.get_all(Report)
-        print(reports)
-
-
-        k = AuthKeys("doasifj", "osdijf", u.id)
-        storage.delete(k)
-
-        for k in all_keys:
-            storage.delete(k)
-
-        all_keys = storage.get_all(AuthKeys)
-        print(all_keys)
-
-        for u in all_users:
-            storage.delete(u)
-
-        all_users = storage.get_all(u)
-        print(all_users)
-
-def test1():
-    db_path = 'test.db'
-    create_schema(db_path)
-
-    import uuid
-
-    with Storage(db_path) as storage:
-        u = User(str(uuid.uuid4()), "Andy")
-
-        print("dirty")
-        print(u._dirty)
-        print(u)
-
-def test2():
-    db_path = 'test.db'
-    create_schema(db_path)
-
-    import uuid
-
-    with Storage(db_path) as storage:
-        u = User(str(uuid.uuid4()), "Andy")
-
-        storage.insert(u)
-
-        retval = storage.get_one(User, {'name': 'Andy'})
-        print(retval)
-
-        retval = storage.get_one(User, {'id': u.id})
-        print(retval)
-
-        retval = storage.get_one(User, {})
-        print(retval)
-
-        retval = storage.get_one(User, {'id': 'sodifjds'})
-        print(retval)
-
-        retval = storage.get_one(User, {'sodifj': 'dsoifj'})
-        print(retval)
-    
-
-
-if __name__ == "__main__":
-    test2()
-    # test()
+        retval = self._execute_modification(query, item.astuple())
+        if retval != 0:
+            item._dirty = []
+        return retval
