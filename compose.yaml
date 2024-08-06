@@ -6,12 +6,16 @@ services:
       dockerfile: docker/main.Dockerfile
     container_name: main-container
     ports:
-      - "8000:8000" # Expose port 80 of app1 to port 8000 on the host
+      - "8000:8000" # Expose port 8000 of app1 to port 8000 on the host
+    environment:
+      DB_PATH: "/code/db/main.db"
+      RESULTS_PATH: "/code/results"
     networks:
       - app-network
     volumes:
       - volume-1:/aws_connections
       - volume-2:/aws_credentials
+      - volume-3:/code/db
 
   steampipe-host:
     build:
@@ -31,3 +35,4 @@ networks:
 volumes:
   volume-1:
   volume-2:
+  volume-3:

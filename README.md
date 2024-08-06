@@ -1,6 +1,10 @@
 # simpliance
 making compliance simple
 
+## Notes
+
+- use ClassVar to set the table name
+
 ## Pushing creds to steampipe
 
 `~/.aws/credentials`
