@@ -3,7 +3,7 @@ import subprocess
 import re
 import time
 
-RESULTS_PATH = os.environ['RESULTS_PATH']
+from settings import RESULTS_PATH
 
 def validate_inputs(item_id: str, benchmark_name: str, search_path_prefix: str = None):
     # Define a regex pattern for allowed characters (alphanumeric, underscore, and hyphen)

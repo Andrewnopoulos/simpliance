@@ -10,6 +10,7 @@ services:
     environment:
       DB_PATH: "/code/db/main.db"
       RESULTS_PATH: "/code/results"
+      DB_SETUP_FILE: "/code/db_setup.sql"
     networks:
       - app-network
     volumes:

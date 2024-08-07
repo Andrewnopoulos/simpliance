@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./powerpipe.ppc /pp/workspaces.ppc
 
 COPY ./app /code/app
-COPY ./db_setup.sql /code/app/db_setup.sql
+COPY ./db_setup.sql /code/db_setup.sql
 
 WORKDIR /code/app
 

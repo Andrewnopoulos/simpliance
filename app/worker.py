@@ -9,6 +9,70 @@ from client import run_benchmark
 from data.datastore import Storage
 from data.models import Report, User
 
+import threading
+
+class Worker2:
+    _instance = None
+    _lock = threading.Lock()
+
+    db_path = None
+
+    def __new__(cls):
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super(Worker2, cls).__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if not hasattr(self, '_initialized'):
+            self._thread = threading.Thread(target=self._run)
+            self._thread.daemon = True
+            self._initialized = True
+            self.q = queue.Queue()
+
+    def start_thread(self):
+        self._thread.start()
+    
+    def stop_thread(self):
+        self.q.put((None, 'quit'))
+        self._thread.join()
+
+    def put(self, user: User, benchmark_type: str):
+        task_id = str(uuid.uuid4())
+        new_report = Report(task_id, "queued", pendulum.now().to_iso8601_string(), '', user.id)
+        with Storage(self.db_path) as s:
+            s.insert(new_report)
+        self.q.put((task_id, benchmark_type))
+        return {"task_id": task_id}
+
+    def _run(self):
+        while True:
+            print("inside running thread")
+            id, item = self.q.get()
+            if (item == "quit"):
+                return
+            with Storage(self.db_path) as s:
+                report = s.get_one(Report, {'id': id})
+                if not report:
+                    print(f"error fetching report with id {id}")
+                    s.delete(report)
+                    self.q.task_done()
+                    time.sleep(1)
+                    continue
+
+                report.process_state = "progress"
+                s.update(report)
+                print(f'Working on {id} - {item}')
+                # run_benchmark(id, 'aws_compliance.benchmark.cis_v300')
+                run_benchmark(id, item)
+                print(f'Finished {item}')
+                self.q.task_done()
+                report.process_state = "done"
+                report.datetime_completed = pendulum.now().to_iso8601_string()
+                rows = s.update(report)
+                print(f"updated report: {rows}")
+            time.sleep(1)
+
 class Worker(threading.Thread):
     def __init__(self, storage: Storage, *args, **kwargs):
         self.storage = storage

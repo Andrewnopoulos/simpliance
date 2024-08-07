@@ -3,17 +3,16 @@ from typing import Type
 from .models import RootObject, User, AuthKeys, Report
 import pendulum
 
-DEFAULT_DB_PATH = '/code/db/main.db'
-DEFAULT_SETUP_PATH = 'db_setup.sql'
+from settings import DB_PATH, DB_SETUP_FILE
 
-def create_schema(db_dest_path=DEFAULT_DB_PATH, db_setup_script_path=DEFAULT_SETUP_PATH):
+def create_schema(db_dest_path=DB_PATH, db_setup_script_path=DB_SETUP_FILE):
     with sqlite3.connect(db_dest_path) as conn:
         with open(db_setup_script_path, 'r') as sql_file:
             sql_script = sql_file.read()
         conn.executescript(sql_script)
 
 class Storage():
-    def __init__(self, db_path: str = DEFAULT_DB_PATH):
+    def __init__(self, db_path: str = DB_PATH):
         self.db_path = db_path
 
     def __enter__(self):

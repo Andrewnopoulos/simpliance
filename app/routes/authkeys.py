@@ -1,5 +1,3 @@
-import uuid
-
 from fastapi import APIRouter
 
 from data.datastore import Storage
