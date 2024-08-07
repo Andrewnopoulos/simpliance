@@ -1,3 +1,4 @@
+from itertools import count
 from dataclasses import dataclass, astuple as tup, fields as fiel, field
 from typing import Any, ClassVar
 
@@ -48,20 +49,17 @@ class RootObject():
     
     @staticmethod
     def primary() -> list[str]:
-        return []
+        return ['id']
 
 @dataclass
 class AuthKeys(RootObject):
     _table = "auth_keys"
 
+    id: str
     role_id: str
     external_id: str
     user_id: str
-    
-    @staticmethod
-    def primary() -> list[str]:
-        return ['role_id', 'external_id', 'user_id']
-    
+
 
 @dataclass
 class Report(RootObject):
@@ -72,10 +70,7 @@ class Report(RootObject):
     datetime_started: str
     datetime_completed: str
     user_id: str
-
-    @staticmethod
-    def primary() -> list[str]:
-        return ['id']
+    auth_key_id: int
 
 @dataclass
 class User(RootObject):
@@ -83,7 +78,3 @@ class User(RootObject):
 
     id: str
     name: str
-    
-    @staticmethod
-    def primary() -> list[str]:
-        return ['id']
