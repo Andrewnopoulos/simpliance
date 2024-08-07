@@ -7,7 +7,7 @@ import uuid
 
 from client import run_benchmark
 from data.datastore import Storage
-from data.models import Report, User
+from data.models import Report, User, AuthKeys
 
 import threading
 
@@ -37,9 +37,9 @@ class Worker2:
         self.q.put((None, 'quit'))
         self._thread.join()
 
-    def put(self, user: User, benchmark_type: str):
+    def put(self, user: User, keys: AuthKeys, benchmark_type: str):
         task_id = str(uuid.uuid4())
-        new_report = Report(task_id, "queued", pendulum.now().to_iso8601_string(), '', user.id)
+        new_report = Report(task_id, "queued", pendulum.now().to_iso8601_string(), '', user.id, keys.id)
         with Storage(self.db_path) as s:
             s.insert(new_report)
         self.q.put((task_id, benchmark_type))
