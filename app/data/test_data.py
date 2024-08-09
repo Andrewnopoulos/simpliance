@@ -28,7 +28,7 @@ class TestDataStore(unittest.TestCase):
         with Storage('test.db') as s:
             u = User(str(uuid.uuid4()), "Dandy")
             s.insert(u)
-            k = AuthKeys("role", "extern", u.id)
+            k = AuthKeys(str(uuid.uuid4()), "role", "extern", u.id)
             s.insert(k)
             all_users = s.get_all(u)
             self.assertEqual(len(all_users), 1)
@@ -38,11 +38,27 @@ class TestDataStore(unittest.TestCase):
             self.assertEqual(len(all_keys), 1)
             self.assertEqual(all_keys[0].user_id, u.id)
     
+    def test_auth_key_report(self):
+        with Storage('test.db') as s:
+            u = User(str(uuid.uuid4()), "Dandy")
+            s.insert(u)
+            k = AuthKeys(str(uuid.uuid4()), "role", "extern", u.id)
+            s.insert(k)
+            r = Report(str(uuid.uuid4()), 'pending', 'now', '', "test_benchmark", u.id, k.id)
+            s.insert(r)
+
+            fetched_r = s.get_one(Report, {'auth_key_id': k.id})
+            self.assertEqual(fetched_r, r)
+
+            s.delete(r)
+    
     def test_delete(self):
         with Storage('test.db') as s:
             u = User(str(uuid.uuid4()), "Randy")
             s.insert(u)
-            r = Report(str(uuid.uuid4()), "pending", "now", "", u.id)
+            k = AuthKeys(str(uuid.uuid4()), 'role_id', 'test_external_id', u.id)
+            s.insert(k)
+            r = Report(str(uuid.uuid4()), "pending", "now", "", "test_benchmark", u.id, k.id)
             s.insert(r)
             reports = s.get_all(Report)
             self.assertEqual(len(reports), 1)

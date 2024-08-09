@@ -43,8 +43,14 @@ Need to have both files as volumes. Read/write can be done by the python app.
 
 ## TODO
 
-- Push the aws credentials to the steampipe container during build
-- Implementation for adding/removing linked AWS profiles
+### Priority 1
+- Hook CRUD routes up to the Worker
+- Write AWS creds to shared volume
+
+### Priority 2
+- Security (login/logout)
+- Cloudformation template for setting up access
+- UI / UX
 
 ## How's it gonna go?
 

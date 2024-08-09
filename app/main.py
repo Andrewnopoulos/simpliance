@@ -9,6 +9,7 @@ from routes import (
     authkeys_router,
     user_router,
     report_router,
+    interface_router,
     test_router
 )
 
@@ -31,6 +32,7 @@ app.include_router(authkeys_router)
 app.include_router(report_router)
 app.include_router(user_router)
 app.include_router(test_router)
+app.include_router(interface_router)
 
 @app.get("/")
 def read_root():

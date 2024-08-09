@@ -5,11 +5,11 @@ import uuid
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from data.models import Report, User
+from data.models import Report, User, AuthKeys
 from worker import Worker2
-from data.datastore import Storage
+from data.datastore import Storage, create_schema
 
-from settings import RESULTS_PATH
+from settings import RESULTS_PATH, DB_PATH
 
 test_router = APIRouter(prefix='/test',
                           tags=['test'])
@@ -19,10 +19,6 @@ def read_landing():
     with open("content/new.html", 'r') as f:
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
-
-@test_router.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
 
 @test_router.get("/generate")
 def generate_report():
@@ -35,6 +31,21 @@ def generate_report():
 def get_all_reports():
     with Storage() as s:
         return [r.dict() for r in s.get_all(Report)]
+    
+@test_router.post("/reset_test_env/{user_name}")
+def reset_test_env(user_name: str, keys: AuthKeys):
+    os.remove(DB_PATH)
+
+    create_schema()
+
+    u = User(str(uuid.uuid4()), user_name)
+    with Storage() as s:
+        s.insert(u)
+        keys.id = str(uuid.uuid4())
+        keys.user_id = u.id
+        s.insert(keys)
+
+    return (u, keys)
 
 @test_router.get("/reports/{task_id}")
 def get_report(task_id: str):
