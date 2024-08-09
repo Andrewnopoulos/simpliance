@@ -84,6 +84,7 @@ def run_benchmark(report: Report) -> tuple[bool, str]:
     command += f" > {output_file}"
 
     try:
+        subprocess.run('powerpipe benchmark list', cwd=powerpipe_directory, shell=True, check=True)
         subprocess.run(command, cwd=powerpipe_directory, shell=True, check=True)
         print(f"Benchmark results saved to {output_file}")
     except subprocess.CalledProcessError as e:

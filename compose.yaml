@@ -13,7 +13,8 @@ services:
       DB_SETUP_FILE: "/code/db_setup.sql"
       CONNECTIONS_PATH: "/aws_connections"
       CREDENTIALS_PATH: "/aws_credentials"
-
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
     networks:
       - app-network
     volumes:
