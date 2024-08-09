@@ -44,7 +44,7 @@ class TestDataStore(unittest.TestCase):
             s.insert(u)
             k = AuthKeys(str(uuid.uuid4()), "role", "extern", u.id)
             s.insert(k)
-            r = Report(str(uuid.uuid4()), 'pending', 'now', '', u.id, k.id)
+            r = Report(str(uuid.uuid4()), 'pending', 'now', '', "test_benchmark", u.id, k.id)
             s.insert(r)
 
             fetched_r = s.get_one(Report, {'auth_key_id': k.id})
@@ -58,7 +58,7 @@ class TestDataStore(unittest.TestCase):
             s.insert(u)
             k = AuthKeys(str(uuid.uuid4()), 'role_id', 'test_external_id', u.id)
             s.insert(k)
-            r = Report(str(uuid.uuid4()), "pending", "now", "", u.id, k.id)
+            r = Report(str(uuid.uuid4()), "pending", "now", "", "test_benchmark", u.id, k.id)
             s.insert(r)
             reports = s.get_all(Report)
             self.assertEqual(len(reports), 1)

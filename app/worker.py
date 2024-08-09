@@ -5,7 +5,7 @@ import pendulum
 
 import uuid
 
-from client import run_benchmark
+from client import run_benchmark, validate_input
 from data.datastore import Storage
 from data.models import Report, User, AuthKeys
 
@@ -34,38 +34,54 @@ class Worker2:
         self._thread.start()
     
     def stop_thread(self):
-        self.q.put((None, 'quit'))
+        self.q.put('quit')
         self._thread.join()
 
     def put(self, user: User, keys: AuthKeys, benchmark_type: str):
-        task_id = str(uuid.uuid4())
-        new_report = Report(task_id, "queued", pendulum.now().to_iso8601_string(), '', user.id, keys.id)
+        try:
+            validate_input(benchmark_type)
+        except ValueError as e:
+            print(f"Input validation failed: {e}")
+            return str(e)
+        report_id = str(uuid.uuid4())
+        new_report = Report(
+            report_id,
+            "queued",
+            pendulum.now().to_iso8601_string(),
+            '',
+            benchmark_type,
+            user.id,
+            keys.id
+        )
         with Storage(self.db_path) as s:
             s.insert(new_report)
-        self.q.put((task_id, benchmark_type))
-        return {"task_id": task_id}
+        self.q.put(report_id)
+        return {"report_id": report_id}
 
     def _run(self):
         while True:
             print("inside running thread")
-            id, item = self.q.get()
-            if (item == "quit"):
+            report_id = self.q.get()
+            if (report_id == "quit"):
                 return
             with Storage(self.db_path) as s:
-                report = s.get_one(Report, {'id': id})
+                report = s.get_one(Report, {'id': report_id})
                 if not report:
-                    print(f"error fetching report with id {id}")
+                    print(f"error fetching report with id {report_id}")
                     s.delete(report)
                     self.q.task_done()
                     time.sleep(1)
                     continue
 
                 report.process_state = "progress"
+                
                 s.update(report)
-                print(f'Working on {id} - {item}')
+                print(f'Working on {report_id}')
+                print(f'benchmark: {report.benchmark}')
+                print(f'auth keys: {report.auth_key_id}')
                 # run_benchmark(id, 'aws_compliance.benchmark.cis_v300')
-                run_benchmark(id, item)
-                print(f'Finished {item}')
+                run_benchmark(report)
+                print(f'Finished {report.benchmark}')
                 self.q.task_done()
                 report.process_state = "done"
                 report.datetime_completed = pendulum.now().to_iso8601_string()

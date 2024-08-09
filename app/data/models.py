@@ -69,6 +69,7 @@ class Report(RootObject):
     process_state: str
     datetime_started: str
     datetime_completed: str
+    benchmark: str
     user_id: str
     auth_key_id: int
 

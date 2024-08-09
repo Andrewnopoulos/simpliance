@@ -20,6 +20,7 @@ def read_user_authkeys(user_id: str):
 
 @authkeys_router.post("/")
 def create_authkeys(keys: AuthKeys):
+    # TODO - generate a uid here lmao
     with Storage() as s:
         s.insert(keys)
     return keys.dict()

@@ -20,11 +20,11 @@ CREATE TABLE IF NOT EXISTS reports (
     process_state TEXT NOT NULL,
     datetime_started TEXT NOT NULL,
     datetime_completed TEXT NOT NULL,
+    benchmark TEXT NOT NULL,
     user_id TEXT NOT NULL,
     auth_key_id TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (auth_key_id) REFERENCES auth_keys(id),
-    UNIQUE (auth_key_id)  -- This ensures one-to-one relationship
+    FOREIGN KEY (auth_key_id) REFERENCES auth_keys(id)
 );
 
 -- Create indexes for better query performance
