@@ -47,6 +47,8 @@ Need to have both files as volumes. Read/write can be done by the python app.
 - Hook CRUD routes up to the Worker
 - Write AWS creds to shared volume
 
+#### Done
+
 ### Priority 2
 - Security (login/logout)
 - Cloudformation template for setting up access
