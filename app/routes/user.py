@@ -17,7 +17,7 @@ def read_users():
 @user_router.post("/{name}")
 def create_user(name: str):
     with Storage() as s:
-        new_user = User(str(uuid.uuid4()), name)
+        new_user = User(str(uuid.uuid4()), name, 'test_email')
         s.insert(new_user)
 
         return new_user.dict()

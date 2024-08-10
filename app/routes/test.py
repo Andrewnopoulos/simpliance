@@ -2,7 +2,7 @@ import os
 
 from typing import Annotated
 import uuid
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -12,18 +12,54 @@ from data.datastore import Storage, create_schema
 
 from settings import RESULTS_PATH, DB_PATH
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="test/token")
 
 test_router = APIRouter(prefix='/test',
                           tags=['test'])
 
+def get_user_from_token(token):
+    with Storage() as s:
+        user = s.get_one(User, {'name': token})
+    return user or None
 
 def fake_decode_token(token):
-    return User("fakedecoded_" + token, "test_user")
+    return get_user_from_token(token)
+
+def fake_hash_function(password):
+    return "hash_" + password
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = fake_decode_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
+
+async def get_current_active_user(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+@test_router.post("/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+
+    with Storage() as s:
+        user = s.get_one(User, {'email': form_data.username})
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Email not found")
+
+    hashed_password = fake_hash_function(form_data.password)
+    print(hashed_password)
+    print(user.hashed_password)
+    if not hashed_password == user.hashed_password:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    return {"access_token": user.name, "token_type": "bearer"}
 
 @test_router.get("/users/me")
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
@@ -45,7 +81,8 @@ def reset_test_env(user_name: str, keys: AuthKeys):
 
     create_schema()
 
-    u = User(str(uuid.uuid4()), user_name)
+    u = User(str(uuid.uuid4()), user_name, 'test_email')
+    u.hashed_password = 'hash_hello'
     with Storage() as s:
         s.insert(u)
         keys.id = str(uuid.uuid4())
