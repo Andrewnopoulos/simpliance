@@ -1,7 +1,10 @@
 -- Create the users table
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    disabled BOOLEAN NOT NULL DEFAULT 0,
+    hashed_password TEXT
 );
 
 -- Create the auth_keys table

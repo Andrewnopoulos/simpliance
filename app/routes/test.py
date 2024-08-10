@@ -1,9 +1,10 @@
 import os
 
-from typing import Union
+from typing import Annotated
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from data.models import Report, User, AuthKeys
 from worker import Worker2
@@ -11,8 +12,26 @@ from data.datastore import Storage, create_schema
 
 from settings import RESULTS_PATH, DB_PATH
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 test_router = APIRouter(prefix='/test',
                           tags=['test'])
+
+
+def fake_decode_token(token):
+    return User("fakedecoded_" + token, "test_user")
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    user = fake_decode_token(token)
+    return user
+
+@test_router.get("/users/me")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user
+
+@test_router.get("/get_token/")
+async def read_token(token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token}
 
 @test_router.get("/landing", response_class=HTMLResponse)
 def read_landing():
@@ -20,18 +39,6 @@ def read_landing():
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
 
-@test_router.get("/generate")
-def generate_report():
-    new_user = User(str(uuid.uuid4()), "Andrew")
-    with Storage() as s:
-        s.insert(new_user)
-    return Worker2().put(new_user, "test_benchmark")
-
-@test_router.get("/reports")
-def get_all_reports():
-    with Storage() as s:
-        return [r.dict() for r in s.get_all(Report)]
-    
 @test_router.post("/reset_test_env/{user_name}")
 def reset_test_env(user_name: str, keys: AuthKeys):
     os.remove(DB_PATH)

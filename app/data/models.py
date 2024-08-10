@@ -1,6 +1,6 @@
 from itertools import count
 from dataclasses import dataclass, astuple as tup, fields as fiel, field
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Optional
 
 @dataclass
 class RootObject():
@@ -79,3 +79,29 @@ class User(RootObject):
 
     id: str
     name: str
+    email: str
+    disabled: bool = field(default=False)
+    hashed_password: Optional[str] = field(default=None, repr=False)
+
+    # @property
+    # def password(self) -> Optional[str]:
+    #     return self.hashed_password
+
+    # @password.setter
+    # def password(self, value: str):
+    #     # Here you could add additional validation or hashing logic
+    #     print("TODO - hashing password")
+    #     print(value)
+    #     self.hashed_password = value + "_hashed"
+
+    # def astuple(self):
+    #     # First element is _dirty list which we want to ignore, so pop it
+    #     list_form = list(tup(self))
+    #     list_form.pop(0)
+    #     list_form.pop(-1) # Pop last element too (hashed password)
+    #     return tuple(list_form)
+
+    # @classmethod
+    # def fields(cls):
+    #     # Don't include _dirty in fields
+    #     return tuple([f.name for f in fiel(cls) if f.name not in ['_dirty', 'hashed_password']])
