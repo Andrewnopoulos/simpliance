@@ -2,7 +2,7 @@ import os
 
 results_path_default = 'results'
 db_path_default = 'test.db'
-db_setup_file_default = 'db_setup.sql'
+db_setup_file_default = '../db_setup.sql'
 aws_access_key_id_default = "missing_aws_key"
 aws_secret_access_key_default = "missing_aws_secret"
 connection_path_default = 'aws_connections'
