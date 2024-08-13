@@ -10,7 +10,8 @@ from routes import (
     user_router,
     report_router,
     interface_router,
-    test_router
+    test_router,
+    secure_router
 )
 
 from settings import DB_PATH
@@ -32,6 +33,7 @@ app.include_router(authkeys_router)
 app.include_router(report_router)
 app.include_router(user_router)
 app.include_router(test_router)
+app.include_router(secure_router)
 app.include_router(interface_router)
 
 @app.get("/")
