@@ -31,8 +31,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.mount("/", StaticFiles(directory="public", html=True), name="static")
-
 main_router = APIRouter(prefix='/api')
 
 main_router.include_router(authkeys_router)
@@ -43,6 +41,8 @@ main_router.include_router(secure_router)
 main_router.include_router(interface_router)
 
 app.include_router(main_router)
+
+app.mount("/", StaticFiles(directory="public", html=True), name="static")
 
 # Simply the root will return our Svelte build
 @app.get("/", response_class=FileResponse)
