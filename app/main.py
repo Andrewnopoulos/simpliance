@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -31,14 +31,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.mount("/assets", StaticFiles(directory="public/assets"), name="static")
+app.mount("/", StaticFiles(directory="public", html=True), name="static")
 
-app.include_router(authkeys_router)
-app.include_router(report_router)
-app.include_router(user_router)
-app.include_router(test_router)
-app.include_router(secure_router)
-app.include_router(interface_router)
+main_router = APIRouter(prefix='/api')
+
+main_router.include_router(authkeys_router)
+main_router.include_router(report_router)
+main_router.include_router(user_router)
+main_router.include_router(test_router)
+main_router.include_router(secure_router)
+main_router.include_router(interface_router)
+
+app.include_router(main_router)
 
 # Simply the root will return our Svelte build
 @app.get("/", response_class=FileResponse)
