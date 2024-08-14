@@ -42,9 +42,5 @@ main_router.include_router(interface_router)
 
 app.include_router(main_router)
 
-app.mount("/", StaticFiles(directory="public", html=True), name="static")
+app.mount("/", StaticFiles(directory="../fe3/build", html=True), name="static")
 
-# Simply the root will return our Svelte build
-@app.get("/", response_class=FileResponse)
-async def main():
-    return "public/index.html"

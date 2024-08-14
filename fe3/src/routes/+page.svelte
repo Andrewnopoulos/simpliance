@@ -1,5 +1,5 @@
 <script>
-    // import { goto } from '$app/navigation';
+    import { goto } from '$app/navigation';
 
     let username = '';
     let password = '';
@@ -28,7 +28,7 @@
         if (response.ok) {
           // Successful login
           console.log("success!!")
-        //   goto('/dashboard'); // Redirect to dashboard or any other page
+          goto('/dashboard'); // Redirect to dashboard or any other page
         } else {
           // Failed login
           const data = await response.json();
