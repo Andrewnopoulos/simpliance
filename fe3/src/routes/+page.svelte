@@ -1,5 +1,6 @@
 <script>
     import { goto } from '$app/navigation';
+    import { setCookie, getCookie, eraseCookie } from "../lib/cookiestore";
 
     let username = '';
     let password = '';
@@ -26,8 +27,8 @@
         });
   
         if (response.ok) {
-          // Successful login
-          console.log("success!!")
+          const data = await response.json();
+          setCookie('access_token', data.access_token, 3);
           goto('/dashboard'); // Redirect to dashboard or any other page
         } else {
           // Failed login

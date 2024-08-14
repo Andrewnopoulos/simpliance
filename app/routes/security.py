@@ -20,7 +20,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="security/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/security/token")
 
 secure_router = APIRouter(prefix='/security',
                           tags=['security'])
