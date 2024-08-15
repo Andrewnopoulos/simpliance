@@ -41,6 +41,3 @@ main_router.include_router(secure_router)
 main_router.include_router(interface_router)
 
 app.include_router(main_router)
-
-app.mount("/", StaticFiles(directory="../fe3/build", html=True), name="static")
-

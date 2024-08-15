@@ -1,5 +1,6 @@
 
 services:
+
   app-host:
     build:
       context: .
@@ -32,6 +33,16 @@ services:
     volumes:
       - volume-1:/home/andrew/.steampipe/config/
       - volume-2:/home/andrew/.aws/
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/front.Dockerfile
+    container_name: frontend-container
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
 
 networks:
   app-network:
