@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, APIRouter
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from worker import Worker2
 from data.datastore import create_schema
@@ -30,6 +29,14 @@ async def lifespan(app: FastAPI):
     worker.stop_thread()
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 main_router = APIRouter(prefix='/api')
 

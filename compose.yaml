@@ -43,6 +43,8 @@ services:
       - app-network
     ports:
       - "3000:3000"
+    environment:
+      - API_URL=http://app-host:8000
 
 networks:
   app-network:
