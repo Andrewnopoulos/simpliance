@@ -109,8 +109,17 @@ async def read_users_me(
 ):
     return current_user
 
+from pydantic import BaseModel
+
+class UserRegistration(BaseModel):
+    email: str
+    password: str
+
 @secure_router.post("/users/register")
-async def register_user(name: str, email: str, password: str):
+async def register_user(registration_information: UserRegistration):
+    name = "Please enter your name"
+    email = registration_information.email
+    password = registration_information.password
     u = User(str(uuid.uuid4()), name, email)
     u.hashed_password = get_password_hash(password)
     with Storage() as s:
