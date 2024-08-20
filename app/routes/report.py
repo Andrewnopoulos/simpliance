@@ -40,3 +40,9 @@ def get_report(report_id: str):
     with Storage() as s:
         report = s.get_one(Report, {'id': report_id})
     return report.dict()
+
+
+# GET /api/reports - List reports for the authenticated user
+# GET /api/reports/{id} - Get details of a specific report
+# PUT /api/reports/{id} - Update a report (e.g., to change its state)
+# DELETE /api/reports/{id} - Delete a report

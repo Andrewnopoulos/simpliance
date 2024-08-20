@@ -1,32 +1,77 @@
 import uuid
 
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 
 from data.datastore import Storage
 from data.models import User
+from pydantic import BaseModel
+
+from .auth import get_password_hash, get_current_active_user
 
 user_router = APIRouter(prefix='/users',
                         tags=['users'])
 
-@user_router.get("/")
-def read_users():
-    with Storage() as s:
-        all_users = s.get_all(User)
-    return [u.dict() for u in all_users]
+# POST /api/users - Create a new user
+# GET /api/users/{id} - Get user details
+# PUT /api/users/{id} - Update user details
+# DELETE /api/users/{id} - Delete a user
 
-@user_router.get("/{name}")
-def get_user_by_name(name: str):
+class UserRegistration(BaseModel):
+    email: str
+    password: str
+
+@user_router.post("/register")
+async def register_user(registration_information: UserRegistration):
+    name = "Please enter your name"
+    email = registration_information.email
+    password = registration_information.password
+    u = User(str(uuid.uuid4()), name, email)
+    u.hashed_password = get_password_hash(password)
     with Storage() as s:
-        desired_user = s.get_one(User, {'name': name})
+        s.insert(u)
+
+    return u
+
+@user_router.get("/{id}")
+async def get_user(id: str):
+    with Storage() as s:
+        desired_user = s.get_one(User, {'id': id})
+    
     if not desired_user:
-        return HTMLResponse(status_code=404)
+        raise HTTPException(status_code=404)
+
     return desired_user
 
-@user_router.post("/{name}")
-def create_user(name: str):
-    with Storage() as s:
-        new_user = User(str(uuid.uuid4()), name, 'test_email')
-        s.insert(new_user)
+class UserModification(BaseModel):
+    name: str
+    email: str
 
-        return new_user.dict()
+@user_router.put("/")
+async def modify_user(user_data: UserModification, current_user: Annotated[User, Depends(get_current_active_user)]):
+    with Storage() as s:
+        print(current_user)
+        current_user.name = user_data.name
+        current_user.email = user_data.email
+        updated = s.update(current_user)
+
+    return {'updated_users': updated}
+
+@user_router.delete("/{id}")
+async def delete_user(id: str):
+    with Storage() as s:
+        found_user: User = s.get_one(User, {'id': id})
+        if not found_user:
+            raise HTTPException(status_code=404)
+        deleted = s.delete(found_user)
+
+    return {'deleted_users': deleted}
+
+@user_router.delete("/")
+async def delete_current_user(current_user: Annotated[User, Depends(get_current_active_user)]):
+    with Storage() as s:
+        deleted = s.delete(current_user)
+
+    return {'deleted_users': deleted}
