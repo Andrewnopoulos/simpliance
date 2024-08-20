@@ -61,7 +61,7 @@
   
     <section>
       <h2>Quick Actions</h2>
-      <a href="/new-report" class="button">Create New Report</a>
+      <a href="/reports/new" class="button">Create New Report</a>
       <a href="/setup" class="button">Update API Keys</a>
     </section>
   {/if}

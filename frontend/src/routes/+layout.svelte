@@ -18,14 +18,23 @@
       } else {
         isLoggedIn.set(false);
         if (window.location.pathname !== '/login') {
-          goto('/login');
+          console.log("token is missing?")
+          console.log("going to login screen")
+          // goto('/login');
         }
       }
       isLoading = false;
     }
   
     function getAuthToken() {
-      // Implementation of getAuthToken function
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'auth_token') {
+          return value;
+        }
+      }
+      return null;
     }
   
     function handleLogout() {
@@ -44,7 +53,7 @@
         <ul>
           <li><a href="/dashboard">Dashboard</a></li>
           <li><a href="/reports">Reports</a></li>
-          <li><a href="/new-report">New Report</a></li>
+          <li><a href="/reports/new">New Report</a></li>
           <li><a href="/setup">Setup</a></li>
           <li><button on:click={handleLogout}>Logout</button></li>
         </ul>
