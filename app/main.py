@@ -10,6 +10,10 @@ from routes import (
     authkeys_router,
     user_router,
     report_router,
+    auth_router
+)
+
+from test_routes import (
     interface_router,
     test_router,
     secure_router
@@ -49,8 +53,13 @@ main_router = APIRouter(prefix='/api')
 main_router.include_router(authkeys_router)
 main_router.include_router(report_router)
 main_router.include_router(user_router)
-main_router.include_router(test_router)
-main_router.include_router(secure_router)
-main_router.include_router(interface_router)
+main_router.include_router(auth_router)
+
+debug_router = APIRouter(prefix='/debug')
+
+debug_router.include_router(test_router)
+debug_router.include_router(secure_router)
+debug_router.include_router(interface_router)
 
 app.include_router(main_router)
+app.include_router(debug_router)
