@@ -34,31 +34,10 @@
 					<fieldset>
 						<fieldset class="form-group">
 							<input
-								class="form-control"
-								name="image"
-								type="text"
-								placeholder="URL of profile picture"
-								value={data.user.image}
-							/>
-						</fieldset>
-
-						<fieldset class="form-group">
-							<input
 								class="form-control form-control-lg"
-								name="username"
+								name="name"
 								type="text"
-								placeholder="Username"
-								value={data.user.username}
-							/>
-						</fieldset>
-
-						<fieldset class="form-group">
-							<textarea
-								class="form-control form-control-lg"
-								name="bio"
-								rows="8"
-								placeholder="Short bio about you"
-								value={data.user.bio}
+								placeholder="Name"
 							/>
 						</fieldset>
 
@@ -68,16 +47,6 @@
 								name="email"
 								type="email"
 								placeholder="Email"
-								value={data.user.email}
-							/>
-						</fieldset>
-
-						<fieldset class="form-group">
-							<input
-								class="form-control form-control-lg"
-								name="password"
-								type="password"
-								placeholder="New Password"
 							/>
 						</fieldset>
 

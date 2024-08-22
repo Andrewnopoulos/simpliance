@@ -50,8 +50,8 @@ async def get_user(id: str, current_user: Annotated[User, Depends(get_current_ac
     return {'id': id}
 
 class UserModification(BaseModel):
-    name: Optional[str]
-    email: Optional[str]
+    name: str
+    email: str
 
 @user_router.put("/")
 async def modify_user(user_data: UserModification, current_user: Annotated[User, Depends(get_current_active_user)]):

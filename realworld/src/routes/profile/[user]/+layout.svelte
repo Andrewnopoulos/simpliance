@@ -23,7 +23,7 @@
 						<p>{profile.email}</p>
 					{/if}
 
-					{#if profile.name === data.user?.name}
+					{#if profile.id === data.user?.id}
 						<a href="/settings" class="btn btn-sm btn-outline-secondary action-btn">
 							<i class="ion-gear-a" />
 							Edit Profile Settings
@@ -76,16 +76,6 @@
 								class:active={!is_favorites}
 							>
 								Articles
-							</a>
-						</li>
-
-						<li class="nav-item">
-							<a
-								href="/profile/@{data.name}/favorites"
-								class="nav-link"
-								class:active={is_favorites}
-							>
-								Favorites
 							</a>
 						</li>
 					</ul>

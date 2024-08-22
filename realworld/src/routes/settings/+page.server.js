@@ -18,18 +18,16 @@ export const actions = {
 		const data = await request.formData();
 
 		const user = {
-			username: data.get('username'),
+			name: data.get('name'),
 			email: data.get('email'),
-			password: data.get('password'),
-			image: data.get('image'),
-			bio: data.get('bio')
 		};
 
-		const body = await api.put('user', { user }, locals.user.token);
+		const body = await api.put('users', user, locals.user.token);
 		if (body.errors) return fail(400, body.errors);
 
-		const value = btoa(JSON.stringify(body.user));
-		cookies.set('jwt', value, { path: '/' });
+		// TODO - update JWT after user is updated?
+		// const value = btoa(JSON.stringify(body.user));
+		// cookies.set('jwt', value, { path: '/' });
 
 		locals.user = body.user;
 	}
