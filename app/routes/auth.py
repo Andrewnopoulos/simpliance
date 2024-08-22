@@ -27,10 +27,8 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 class TokenData(BaseModel):
-    email: str | None = None
-
+    id: str | None = None
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -65,14 +63,14 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
     try:
         payload = jwt.decode(token, JWT_ENCRYPTION_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(id=user_id)
     except InvalidTokenError:
         raise credentials_exception
     with Storage() as s:
-        user = s.get_one(User, {"email": token_data.email})
+        user = s.get_one(User, {"id": token_data.id})
     if user is None:
         raise credentials_exception
     return user
@@ -102,7 +100,7 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={ "sub": user.id }, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
@@ -111,6 +109,6 @@ async def login_for_access_token(
 async def refresh_access_token(current_user: Annotated[User, Depends(get_current_active_user)]):
     new_token_expiration = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": current_user.email}, expires_delta=new_token_expiration
+        data={"sub": current_user.id}, expires_delta=new_token_expiration
     )
     return Token(access_token=access_token, token_type="bearer")

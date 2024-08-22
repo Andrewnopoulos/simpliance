@@ -4,7 +4,7 @@ export function load({ locals }) {
 	console.log(locals)
 	return {
 		user: locals.user && {
-			username: locals.user.sub,
+			user_id: locals.user.sub,
 			token: locals.user.token,
 			expiration: locals.user.exp
 		}

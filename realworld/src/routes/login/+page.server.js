@@ -21,7 +21,7 @@ export const actions = {
 		formData.append('client_id', 'string');
 		formData.append('client_secret', 'string');
 
-		const body = await api.postForm('security/token', formData);
+		const body = await api.postForm('auth/login', formData);
 
 		if (body.errors) {
 			return fail(401, body);
