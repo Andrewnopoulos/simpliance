@@ -16,6 +16,7 @@ services:
       CREDENTIALS_PATH: "/aws_credentials"
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
     networks:
       - app-network
     volumes:
