@@ -1,6 +1,6 @@
 import * as api from '$lib/api.js';
 import { error, fail } from '@sveltejs/kit';
-import { get_reports } from './get_reports';
+import { get_reports } from './get_info';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load(event) {

@@ -1,4 +1,4 @@
-import { get_reports } from '../get_reports';
+import { get_reports } from '../get_info';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load(event) {

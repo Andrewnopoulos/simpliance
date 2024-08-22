@@ -9,3 +9,9 @@ export async function get_reports({ params, locals }) {
 		reports
 	};
 }
+
+/*export async function get_user_details({ locals }) {
+	const user_data = await api.get( `users/${locals.user.user_id}`, locals.user.token);
+
+	return { user_data };
+}*/

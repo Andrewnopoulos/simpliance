@@ -4,12 +4,13 @@
 
 	/** @type {import('./$types').PageData} */
 	export let data;
+	$: ({ profile } = data);
 
-	$: is_favorites = $page.route.id === '/profile/@[user]/favorites';
+	$: is_favorites = $page.route.id === '/profile/[user]/favorites';
 </script>
 
 <svelte:head>
-	<title>{data.name} • Conduit</title>
+	<title>{profile.name} • Conduit</title>
 </svelte:head>
 
 <div class="profile-page">
@@ -17,13 +18,12 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 col-md-10 offset-md-1">
-					<img src={data.image} class="user-img" alt={data.name} />
-					<h4>{data.name}</h4>
-					{#if data.bio}
-						<p>{data.bio}</p>
+					<h4>{profile.name}</h4>
+					{#if profile.email}
+						<p>{profile.email}</p>
 					{/if}
 
-					{#if data.name === data.user?.name}
+					{#if profile.name === data.user?.name}
 						<a href="/settings" class="btn btn-sm btn-outline-secondary action-btn">
 							<i class="ion-gear-a" />
 							Edit Profile Settings
