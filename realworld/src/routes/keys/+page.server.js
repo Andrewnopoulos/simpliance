@@ -4,6 +4,10 @@ import * as api from '$lib/api.js';
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
 	if (!locals.user) redirect(302, `/login`);
+
+    const user_keys = await api.get(`auth-keys`, locals.user.token);
+
+	return { user_keys };
 }
 
 /** @type {import('./$types').Actions} */

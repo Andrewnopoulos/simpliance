@@ -14,6 +14,9 @@
 
 				<form use:enhance method="POST">
 					<fieldset class="form-group">
+						<p>
+							Role ID
+						</p>
 						<input
 							name="role_id"
 							class="form-control"
@@ -23,6 +26,9 @@
 					</fieldset>
 
 					<fieldset class="form-group">
+						<p>
+							External ID
+						</p>
 						<input
 							name="external_id"
 							class="form-control"
