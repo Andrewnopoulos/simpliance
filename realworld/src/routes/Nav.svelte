@@ -18,6 +18,12 @@
 				</li>
 
 				<li class="nav-item">
+					<a href="/keys" class="nav-link" class:active={$page.url.pathname === '/keys'}>
+						<i class="ion-compose" />&nbsp;New Keys
+					</a>
+				</li>
+
+				<li class="nav-item">
 					<a href="/settings" class="nav-link" class:active={$page.url.pathname === '/settings'}>
 						<i class="ion-gear-a" />&nbsp;Settings
 					</a>

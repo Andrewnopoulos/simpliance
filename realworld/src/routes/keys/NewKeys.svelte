@@ -1,0 +1,42 @@
+<script>
+	import { enhance } from '$app/forms';
+	import ListErrors from '$lib/ListErrors.svelte';
+
+	export let authkeys;
+	export let errors;
+</script>
+
+<div class="editor-page">
+	<div class="container page">
+		<div class="row">
+			<div class="col-md-10 offset-md-1 col-xs-12">
+				<ListErrors {errors} />
+
+				<form use:enhance method="POST">
+					<fieldset class="form-group">
+						<input
+							name="role_id"
+							class="form-control"
+							placeholder="AWS Role ID"
+							value={authkeys.role_id}
+						/>
+					</fieldset>
+
+					<fieldset class="form-group">
+						<input
+							name="external_id"
+							class="form-control"
+							placeholder="External ID"
+							value={authkeys.external_id}
+						/>
+					</fieldset>
+
+					<button class="btn btn-lg pull-xs-right btn-primary">Add Authkeys</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+</style>

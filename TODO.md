@@ -2,14 +2,14 @@
 
 ## TODO:
 - Begin new report
-- Browse Auth Keys
 - Add new set of Auth Keys
 
 ## WIP:
-- Browse Reports
+- Browse Auth Keys
 
 ## Functional:
 - User profile page
 - Edit user page
+- Browse Reports
 
 ## Done:
