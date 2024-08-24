@@ -1,12 +1,11 @@
 import * as api from '$lib/api.js';
 import { error, fail } from '@sveltejs/kit';
-import { get_reports } from './get_info';
 
-/** @type {import('./$types').PageServerLoad} */
-export async function load(event) {
-	const { reports } = await get_reports(event, 'author');
-	return { reports };
-}
+// /** @type {import('./$types').PageServerLoad} */
+// export async function load(event) {
+// 	const { reports } = await get_reports(event, 'author');
+// 	return { reports };
+// }
 
 /** @type {import('./$types').Actions} */
 export const actions = {

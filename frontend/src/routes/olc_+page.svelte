@@ -46,10 +46,10 @@
     formData.append('client_id', 'string');
     formData.append('client_secret', 'string');
 
-    console.log("username: ")
-    console.log(username)
-    console.log("password:")
-    console.log(password)
+    // console.log("username: ")
+    // console.log(username)
+    // console.log("password:")
+    // console.log(password)
 
     const response = await fetch(`${apiUrl}/api/security/token`, {
       method: 'POST',
@@ -65,7 +65,6 @@
     }
 
     const data = await response.json();
-    console.log(data)
     return data.access_token;
   }
 
@@ -108,7 +107,6 @@
       }
 
       protectedData = await response.json();
-      console.log(protectedData);
     } catch (error) {
       console.error('Failed to fetch protected data:', error);
       errorMessage = 'Failed to fetch protected data.';

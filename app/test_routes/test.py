@@ -1,4 +1,8 @@
 import os
+from datetime import datetime as dt
+from datetime import timedelta as td
+
+import pendulum
 
 from typing import Annotated
 import uuid
@@ -91,20 +95,37 @@ def fake_hash_function(password):
 
 #     return (u, keys)
 
-# @test_router.get("/reports/{task_id}")
-# def get_report(task_id: str):
-#     with Storage() as s:
-#         task = s.get_one(Report, {'id': task_id})
-#     if not task:
-#         return HTMLResponse(None, status_code=404)
-#     if task.process_state == "done":
-#         filename = os.path.join(RESULTS_PATH, f"{task_id}.html")
-#         print(f"searching for {filename}")
-#         try:
-#             with open(filename, 'r') as f:
-#                 html_content = f.read()
-#             return HTMLResponse(content=html_content, status_code=200)
-#         except:
-#             return JSONResponse({"error": f"Failed to find {filename}"})
-#     else:
-#         return task
+def generate_report(s: Storage, user_id: str, status: str):
+    r = Report(str(uuid.uuid4()),
+               status,
+               pendulum.now().to_iso8601_string(),
+               pendulum.now().add(minutes=4).to_iso8601_string(), "test benchmark", user_id, str(uuid.uuid4()))
+    s.insert(r)
+
+@test_router.get("/populate/{user_id}")
+def populate_reports(user_id: str):
+    with Storage() as s:
+        generate_report(s, user_id, "queued")
+        generate_report(s, user_id, "progress")
+        generate_report(s, user_id, "done")
+        generate_report(s, user_id, "queued")
+        generate_report(s, user_id, "progress")
+        generate_report(s, user_id, "done")
+
+@test_router.get("/reports/{task_id}")
+def get_report(task_id: str):
+    with Storage() as s:
+        task = s.get_one(Report, {'id': task_id})
+    if not task:
+        return HTMLResponse(None, status_code=404)
+    if task.process_state == "done":
+        filename = os.path.join(RESULTS_PATH, f"{task_id}.html")
+        print(f"searching for {filename}")
+        try:
+            with open(filename, 'r') as f:
+                html_content = f.read()
+            return HTMLResponse(content=html_content, status_code=200)
+        except:
+            return JSONResponse({"error": f"Failed to find {filename}"})
+    else:
+        return task

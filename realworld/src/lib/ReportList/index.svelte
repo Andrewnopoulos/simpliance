@@ -9,7 +9,7 @@
 	<div class="report-preview">No reports are here... yet.</div>
 {:else}
 	<div>
-		{#each reports as report (report.slug)}
+		{#each reports as report (report.id)}
 			<ReportPreview {report} user={$page.data.user} />
 		{/each}
 	</div>

@@ -60,8 +60,8 @@
       }
   
       const data = await response.json();
-      console.log(data)
-      return data.access_token;
+      // console.log(data)
+      // return data.access_token;
     }
   
     function setAuthCookie(token) {
@@ -103,7 +103,7 @@
         }
   
         protectedData = await response.json();
-        console.log(protectedData);
+        // console.log(protectedData);
       } catch (error) {
         console.error('Failed to fetch protected data:', error);
         errorMessage = 'Failed to fetch protected data.';

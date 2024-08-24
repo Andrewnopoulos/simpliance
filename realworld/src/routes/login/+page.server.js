@@ -11,8 +11,6 @@ export const actions = {
 	default: async ({ cookies, request }) => {
 		const data = await request.formData();
 
-		console.log(data)
-
 		const formData = new URLSearchParams();
 		formData.append('grant_type', 'password');
 		formData.append('username', data.get('email'));

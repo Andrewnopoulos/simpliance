@@ -35,7 +35,6 @@
         }
 
         const data = await response.json();
-        console.log(data)
         isLoggedIn.set(true);
         return data.access_token;
     }
@@ -54,7 +53,6 @@
         }
 
         const data = await response.json();
-        console.log(data)
         return data.access_token;
     }
   

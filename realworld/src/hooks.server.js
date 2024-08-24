@@ -1,7 +1,7 @@
 /** @type {import('@sveltejs/kit').Handle} */
 export function handle({ event, resolve }) {
 	const jwt = event.cookies.get('jwt');
-	console.log(jwt)
+	// console.log(jwt)
     if (jwt) {
         // The JWT is now the raw access token, no need to decode
         event.locals.user = { token: jwt };
@@ -12,7 +12,7 @@ export function handle({ event, resolve }) {
             const [header, payload, signature] = jwt.split('.');
             const decodedPayload = JSON.parse(atob(payload));
             event.locals.user = { ...event.locals.user, ...decodedPayload };
-			console.log(event.locals.user)
+			// console.log(event.locals.user)
         } catch (error) {
             console.error('Error decoding JWT:', error);
         }
