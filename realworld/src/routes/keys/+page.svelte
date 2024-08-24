@@ -8,6 +8,11 @@
 </script>
 
 <div>
+	<div class="editor-page">
+        <div class="container page">
+            <h1>Add new keys</h1>
+        </div>
+    </div>
 	<NewKeys
 		authkeys={{
 			role_id: '',

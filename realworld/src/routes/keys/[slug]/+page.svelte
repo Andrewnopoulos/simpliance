@@ -8,4 +8,13 @@
 	export let form;
 </script>
 
-<NewKeys authkeys={data.keys} errors={form?.errors} />
+<div>
+
+    <div class="editor-page">
+        <div class="container page">
+            <h1>Edit Existing keys</h1>
+        </div>
+    </div>
+    <NewKeys authkeys={data.keys} errors={form?.errors} />
+
+</div>
