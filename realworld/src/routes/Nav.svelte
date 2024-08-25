@@ -12,8 +12,8 @@
 
 			{#if $page.data.user}
 				<li class="nav-item">
-					<a href="/editor" class="nav-link" class:active={$page.url.pathname === '/editor'}>
-						<i class="ion-compose" />&nbsp;New Post
+					<a href="/reports" class="nav-link" class:active={$page.url.pathname === '/reports'}>
+						<i class="ion-compose" />&nbsp;New Report
 					</a>
 				</li>
 

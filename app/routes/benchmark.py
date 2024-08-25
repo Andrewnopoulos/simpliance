@@ -39,4 +39,5 @@ def start_benchmarking(benchmark_details: newBenchmarkReport, current_user: Anno
     if auth_key.user_id != current_user.id:
         raise HTTPException(status_code=404, detail=f"Auth key with id {benchmark_details.auth_key_id} not found")
     
+
     return Worker2().put(current_user, auth_key, benchmark_details.type)
