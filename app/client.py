@@ -14,6 +14,37 @@ from settings import (
     CREDENTIALS_PATH
 )
 
+VALID_BENCHMARKS = [
+    "audit_manager_control_tower",
+    "cis_compute_service_v100",
+    "cis_controls_v8_ig1",
+    "cis_v120",
+    "cis_v130",
+    "cis_v140",
+    "cis_v150",
+    "cis_v200",
+    "cis_v300",
+    "cisa_cyber_essentials",
+    "fedramp_low_rev_4",
+    "fedramp_moderate_rev_4",
+    "ffiec",
+    "foundational_security",
+    "gdpr",
+    "gxp_21_cfr_part_11",
+    "gxp_eu_annex_11",
+    "hipaa_final_omnibus_security_rule_2013",
+    "hipaa_security_rule_2003",
+    "nist_800_171_rev_2",
+    "nist_800_172",
+    "nist_800_53_rev_4",
+    "nist_800_53_rev_5",
+    "nist_csf",
+    "pci_dss_v321",
+    "rbi_cyber_security",
+    "rbi_itf_nbfc",
+    "soc_2"
+]
+
 def validate_input(input: str):
     allowed_pattern = re.compile(r'^[\.a-zA-Z0-9_-]+$')
     if not allowed_pattern.match(input):
@@ -78,7 +109,7 @@ def run_benchmark(report: Report) -> tuple[bool, str]:
     powerpipe_directory = "/pp"
 
     # Construct the command
-    command = f"powerpipe benchmark run {report.benchmark} --output html"
+    command = f"powerpipe benchmark run aws_compliance.benchmark.{report.benchmark} --output html"
     command += f" --search-path-prefix aws_client_connection"
     # aws_client_connection must match the template connection name
     command += f" > {output_file}"

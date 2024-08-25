@@ -7,6 +7,7 @@ from worker import Worker2
 from data.datastore import create_schema
 
 from routes import (
+    benchmark_router,
     authkeys_router,
     user_router,
     report_router,
@@ -50,6 +51,7 @@ app.add_middleware(
 
 main_router = APIRouter(prefix='/api')
 
+main_router.include_router(benchmark_router)
 main_router.include_router(authkeys_router)
 main_router.include_router(report_router)
 main_router.include_router(user_router)
