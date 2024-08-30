@@ -8,7 +8,7 @@
 </script>
 
 <Benchmark
-	user_keys={data.authkeys}
+	user_keys={data.user_keys}
 	benchmark_list={data.benchmark_list}
 	errors={form?.errors}
 />

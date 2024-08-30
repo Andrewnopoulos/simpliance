@@ -22,7 +22,7 @@
 						<p>
 							Auth Keys
 						</p>
-						<!-- <select
+						<select
 							value={selected_key}
 							>
 							{#each user_keys as user_key}
@@ -30,7 +30,7 @@
 								{user_key.role_id}
 							</option>
 							{/each}
-						</select> -->
+						</select>
 					</fieldset>
 
 					<fieldset class="form-group">

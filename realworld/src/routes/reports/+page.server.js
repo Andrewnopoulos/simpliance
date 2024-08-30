@@ -8,9 +8,6 @@ export async function load({ locals }) {
 	const benchmark_list = await api.get('benchmark')
 	const user_keys = await api.get(`auth-keys`, locals.user.token);
 
-	console.log(benchmark_list);
-	console.log(user_keys)
-
 	return { benchmark_list, user_keys }
 }
 
