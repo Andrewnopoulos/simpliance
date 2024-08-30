@@ -21,8 +21,8 @@ export const actions = {
 		const result = await api.post(
 			'benchmark',
 			{
-				auth_key_id: data.get('auth_key_id'),
-				type: data.get('benchmark_selection')
+				auth_key_id: data.get('selected_key'),
+				type: data.get('selected_benchmark')
 			},
 			locals.user.token
 		);

@@ -23,6 +23,7 @@
 							Auth Keys
 						</p>
 						<select
+							name="selected_key"
 							value={selected_key}
 							>
 							{#each user_keys as user_key}
@@ -38,6 +39,7 @@
 							Benchmark
 						</p>
 						<select
+							name="selected_benchmark"
 							value={selected_benchmark}
 							>
 							{#each benchmark_list as benchmark}
