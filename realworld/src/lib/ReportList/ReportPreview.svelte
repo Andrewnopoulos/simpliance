@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<a href="/report/{report.id}" class="preview-link">
+	<a href="/reports/{report.id}" class="preview-link">
 		<h1>{report.benchmark}</h1>
 		<p>{report.process_state}</p>
 		<span class="date">{new Date(report.datetime_started).toDateString()}</span>
