@@ -10,7 +10,7 @@
 {:else}
 	<div>
 		{#each reports as report (report.id)}
-			<ReportPreview {report} user={$page.data.user} />
+			<ReportPreview {report} />
 		{/each}
 	</div>
 {/if}

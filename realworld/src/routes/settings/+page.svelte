@@ -2,8 +2,8 @@
 	import { enhance } from '$app/forms';
 	import ListErrors from '$lib/ListErrors.svelte';
 
-	// /** @type {import('./$types').PageData} */
-	// export let data;
+	/** @type {import('./$types').PageData} */
+	export let data;
 
 	/** @type {import('./$types').ActionData} */
 	export let form;
