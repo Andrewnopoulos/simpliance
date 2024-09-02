@@ -45,7 +45,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=http://app-host:8000
+      - API_URL=http://app-host:8000/api
+      - ORIGIN=http://localhost:3000
 
 networks:
   app-network:

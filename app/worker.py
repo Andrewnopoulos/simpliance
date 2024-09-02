@@ -80,7 +80,7 @@ class Worker2:
                 print(f'benchmark: {report.benchmark}')
                 print(f'auth keys: {report.auth_key_id}')
                 # run_benchmark(id, 'aws_compliance.benchmark.cis_v300') # NOT USED
-                # run_benchmark(report)
+                run_benchmark(report)
                 print(f'Finished {report.benchmark}')
                 self.q.task_done()
                 report.process_state = "done"

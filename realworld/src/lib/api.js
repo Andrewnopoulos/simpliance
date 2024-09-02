@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
 
-// const base = 'https://api.realworld.io/api';
-
 const base = 'http://localhost:8000/api';
+
+// const base = process.env.API_URL;
 
 async function send({ method, path, data, token, type }) {
 	const opts = { method, headers: {} };

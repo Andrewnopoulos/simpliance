@@ -1,3 +1,4 @@
+from datetime import timedelta
 import uuid
 
 from typing import Annotated, Optional
@@ -9,7 +10,13 @@ from data.datastore import Storage
 from data.models import User
 from pydantic import BaseModel
 
-from .auth import get_password_hash, get_current_active_user
+from .auth import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    create_access_token,
+    get_password_hash,
+    get_current_active_user,
+    Token
+)
 
 user_router = APIRouter(prefix='/users',
                         tags=['users'])
@@ -34,7 +41,11 @@ async def register_user(registration_information: UserRegistration):
     with Storage() as s:
         s.insert(u)
 
-    return u
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={ "sub": u.id }, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
 
 @user_router.get("/{id}")
 async def get_user(id: str, current_user: Annotated[User, Depends(get_current_active_user)]):
