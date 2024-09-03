@@ -1,8 +1,25 @@
 import { error } from '@sveltejs/kit';
 
-const base = 'http://localhost:8000/api';
+const base = process.env.API_URL || 'http://localhost:8000/api';
 
-// const base = process.env.API_URL;
+// const base = process.env.API_URL || 'http://app-host:8000';
+
+async function sendRaw({ method, path, token }) {
+
+	const opts = { method, headers: {} };
+
+	if (token) {
+		opts.headers['Authorization'] = `Bearer ${token}`;
+	}
+
+	const res = await fetch(`${base}/${path}`, opts);
+	if (res.ok || res.status === 422) {
+		const text = await res.text();
+		return text
+	}
+
+	error(res.status);
+}
 
 async function send({ method, path, data, token, type }) {
 	const opts = { method, headers: {} };
@@ -47,4 +64,8 @@ export function put(path, data, token) {
 
 export function postForm(path, data, token) {
 	return send({ method: 'POST', path, data, token, type: 'application/x-www-form-urlencoded' });
+}
+
+export function getHTML(path, token) {
+	return sendRaw({ method: 'GET', path, token });
 }

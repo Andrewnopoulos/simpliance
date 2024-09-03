@@ -118,8 +118,15 @@ def run_benchmark(report: Report) -> tuple[bool, str]:
         subprocess.run('powerpipe benchmark list', cwd=powerpipe_directory, shell=True, check=True)
         subprocess.run(command, cwd=powerpipe_directory, shell=True, check=True)
         print(f"Benchmark results saved to {output_file}")
+    except FileNotFoundError as e:
+        print(f"Error running benchmark: {e}")
+        with open(output_file, 'w') as f:
+            f.write(f"<Title>Yay!</Title><h1>{report.benchmark}</h1>")
     except subprocess.CalledProcessError as e:
         print(f"Error running benchmark: {e}")
+        with open(output_file, 'w') as f:
+            f.write(f"<Title>Yay!</Title><h1>{report.benchmark}</h1>")
+    
 
     try:
         os.remove(cred_file)
