@@ -52,6 +52,7 @@
             <p>Started: {report.datetime_started}</p>
             {#if report.datetime_completed}
                 <p>Completed: {report.datetime_completed}</p>
+                
             {/if}
             <p>Started by: <a href="/profile/{report.user_id}">{report.user_id}</a></p>
             <p>Using auth keys: <a href="/keys/{report.auth_key_id}">{report.auth_key_id}</a></p>
