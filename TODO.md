@@ -1,7 +1,6 @@
 # Update UX
 
 ## TODO:
-- Displaying completed report detail HTML
 - Fix up Auth key detail display page
     - button to prompt editing
     - show key id somewhere
@@ -11,6 +10,7 @@
 ## WIP:
 
 ## Functional:
+- Displaying completed report detail HTML
 - Begin new report
 - Browse Auth Keys
 - Add new set of Auth Keys

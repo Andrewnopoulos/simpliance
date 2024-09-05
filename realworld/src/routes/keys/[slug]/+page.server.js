@@ -28,6 +28,8 @@ export const actions = {
 
 		if (result.errors) error(400, result.errors);
 
-		redirect(303, `/article/${result.article.slug}`);
+		console.log(result);
+
+		redirect(303, `${params.slug}`)
 	}
 };

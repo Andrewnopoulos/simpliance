@@ -10,7 +10,7 @@
 <div>
 	<div class="editor-page">
         <div class="container page">
-            <h1>Add new keys</h1>
+            <h1>Add new Environment</h1>
         </div>
     </div>
 	<NewKeys
@@ -23,7 +23,7 @@
 
 	<div class="container">
 		<div>
-			<h2>Existing Keys</h2>
+			<h2>Existing Environments</h2>
 		</div>
 		{#each data.user_keys as user_key (user_key.id)}
 			<div class="row">
