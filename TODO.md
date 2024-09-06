@@ -1,15 +1,16 @@
 # Update UX
 
 ## TODO:
-- Fix up Auth key detail display page
-    - button to prompt editing
-    - show key id somewhere
 - Instructional video on adding keys
 - static link to the aws template
+- landing page
 
 ## WIP:
 
 ## Functional:
+- Fix up Auth key detail display page
+    - button to prompt editing
+    - show key id somewhere
 - Displaying completed report detail HTML
 - Begin new report
 - Browse Auth Keys
