@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-import uuid
 
 import jwt
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -10,29 +9,26 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from data.datastore import Storage
-from data.models import User, AuthKeys, Report
+from data.models import User
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "f1592cad353ec77355dd864e1499700b97b7b3285a7a43cd954dccbeb38ec1ae"
+from settings import JWT_ENCRYPTION_KEY
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="security/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
-secure_router = APIRouter(prefix='/security',
-                          tags=['security'])
+auth_router = APIRouter(prefix='/auth',
+                          tags=['auth'])
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 class TokenData(BaseModel):
-    email: str | None = None
-
+    id: str | None = None
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -56,7 +52,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, JWT_ENCRYPTION_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
@@ -66,15 +62,15 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        payload = jwt.decode(token, JWT_ENCRYPTION_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(id=user_id)
     except InvalidTokenError:
         raise credentials_exception
     with Storage() as s:
-        user = s.get_one(User, {"email": token_data.email})
+        user = s.get_one(User, {"id": token_data.id})
     if user is None:
         raise credentials_exception
     return user
@@ -86,7 +82,12 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-@secure_router.post("/token")
+
+# POST /api/auth/login - User login
+# POST /api/auth/logout - User logout
+# POST /api/auth/refresh - Refresh authentication token
+
+@auth_router.post("/login")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
@@ -99,29 +100,15 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={ "sub": user.id }, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@secure_router.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
 
-@secure_router.post("/users/register")
-async def register_user(name: str, email: str, password: str):
-    u = User(str(uuid.uuid4()), name, email)
-    u.hashed_password = get_password_hash(password)
-    with Storage() as s:
-        s.insert(u)
-
-    return u
-
-@secure_router.get("/users/me/reports/")
-async def read_own_reports(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    with Storage() as s:
-        user_reports = s.get_where(Report, {'user_id': current_user.id})
-    return [{"reports": user_reports, "owner": current_user.name}]
+@auth_router.post("/refresh")
+async def refresh_access_token(current_user: Annotated[User, Depends(get_current_active_user)]):
+    new_token_expiration = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": current_user.id}, expires_delta=new_token_expiration
+    )
+    return Token(access_token=access_token, token_type="bearer")

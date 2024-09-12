@@ -1,5 +1,6 @@
 
 services:
+
   app-host:
     build:
       context: .
@@ -15,6 +16,7 @@ services:
       CREDENTIALS_PATH: "/aws_credentials"
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      JWT_ENCRYPTION_KEY: ${JWT_ENCRYPTION_KEY}
     networks:
       - app-network
     volumes:
@@ -32,6 +34,19 @@ services:
     volumes:
       - volume-1:/home/andrew/.steampipe/config/
       - volume-2:/home/andrew/.aws/
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/front.Dockerfile
+    container_name: frontend-container
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://app-host:8000/api
+      - ORIGIN=http://localhost:3000
 
 networks:
   app-network:

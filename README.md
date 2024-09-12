@@ -41,19 +41,6 @@ connection "aws_account_b" {
 
 Need to have both files as volumes. Read/write can be done by the python app.
 
-## TODO
-
-### Priority 1
-- Hook CRUD routes up to the Worker
-- Write AWS creds to shared volume
-
-#### Done
-
-### Priority 2
-- Security (login/logout)
-- Cloudformation template for setting up access
-- UI / UX
-
 ## How's it gonna go?
 
 - Benchmark request from a client comes in
