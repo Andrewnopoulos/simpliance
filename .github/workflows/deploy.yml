@@ -51,6 +51,7 @@ jobs:
         scp -r ./* $USER@$HOST:/home/admin/build
         ssh $USER@$HOST <<EOF
           cd /home/admin/build
+          export DEPLOY_URL=$HOST
           export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
           export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           export JWT_ENCRYPTION_KEY="$JWT_ENCRYPTION_KEY"

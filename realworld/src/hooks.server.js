@@ -1,5 +1,5 @@
 /** @type {import('@sveltejs/kit').Handle} */
-export function handle({ event, resolve }) {
+export async function handle({ event, resolve }) {
 	const jwt = event.cookies.get('jwt');
 	// console.log(jwt)
     if (jwt) {
@@ -20,5 +20,14 @@ export function handle({ event, resolve }) {
         event.locals.user = null;
     }
 
-	return resolve(event);
+    // Resolve the request
+    const response = await resolve(event);
+
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', process.env.ORIGIN);
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+
+    return response;
 }
