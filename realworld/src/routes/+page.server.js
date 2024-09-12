@@ -7,22 +7,17 @@ export async function load({ locals, url }) {
 	const tag = url.searchParams.get('tag');
 	const page = +(url.searchParams.get('page') ?? '1');
 
-	const endpoint = tab === 'feed' ? 'articles/feed' : 'articles';
+	let reports = [];
+	let keys = [];
 
-	const q = new URLSearchParams();
-
-	q.set('limit', page_size);
-	q.set('offset', (page - 1) * page_size);
-	if (tag) q.set('tag', tag);
-
-	const [{ articles, articlesCount }, { tags }] = await Promise.all([
-		api.get(`${endpoint}?${q}`, locals.user?.token),
-		api.get('tags')
-	]);
+	if (locals.user)
+	{
+		reports = await api.get( 'reports', locals.user?.token);
+		keys = await api.get(`auth-keys`, locals.user?.token);	
+	}
 
 	return {
-		articles,
-		pages: Math.ceil(articlesCount / page_size),
-		tags
+		reports,
+		keys
 	};
 }

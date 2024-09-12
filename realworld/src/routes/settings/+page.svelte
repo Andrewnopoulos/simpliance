@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings • Conduit</title>
+	<title>Settings • Simple Compliance</title>
 </svelte:head>
 
 <div class="settings-page">

@@ -2,12 +2,12 @@
 
 ## TODO:
 - Instructional video on adding keys
-- static link to the aws template
 - landing page
 
 ## WIP:
 
 ## Functional:
+- static link to the aws template
 - Fix up Auth key detail display page
     - button to prompt editing
     - show key id somewhere

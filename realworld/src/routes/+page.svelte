@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import ArticleList from '$lib/ArticleList/index.svelte';
+	import ReportList from '$lib/ReportList/index.svelte';
 	import Pagination from './Pagination.svelte';
 
 	/** @type {import('./$types').PageData} */
@@ -13,14 +13,14 @@
 </script>
 
 <svelte:head>
-	<title>Conduit</title>
+	<title>Simple Compliance</title>
 </svelte:head>
 
 <div class="home-page">
 	{#if !data.user}
 		<div class="banner">
 			<div class="container">
-				<h1 class="logo-font">conduit</h1>
+				<h1 class="logo-font">Simple Compliance</h1>
 				<p>A place to share your knowledge.</p>
 			</div>
 		</div>
@@ -39,11 +39,11 @@
 
 						{#if data.user}
 							<li class="nav-item">
-								<a href="/?tab=feed" class="nav-link" class:active={tab === 'feed'}>Your Feed</a>
+								<a href="/?tab=feed" class="nav-link" class:active={tab === 'feed'}>Your reports</a>
 							</li>
 						{:else}
 							<li class="nav-item">
-								<a href="/login" class="nav-link">Sign in to see your Feed</a>
+								<a href="/login" class="nav-link">Sign in to see your reports</a>
 							</li>
 						{/if}
 
@@ -58,16 +58,16 @@
 					</ul>
 				</div>
 
-				<ArticleList articles={data.articles} />
+				<ReportList reports={data.reports} />
 				<Pagination pages={data.pages} {p} href={(p) => `/?${page_link_base}&page=${p}`} />
 			</div>
 
 			<div class="col-md-3">
 				<div class="sidebar">
-					<p>Popular Tags</p>
+					<p>Environments</p>
 					<div class="tag-list">
-						{#each data.tags as tag}
-							<a href="/?tag={tag}" class="tag-default tag-pill">{tag}</a>
+						{#each data.keys as key}
+							<a href="/keys/{key.id}" class="tag-default tag-pill">{key.role_id}</a>
 						{/each}
 					</div>
 				</div>

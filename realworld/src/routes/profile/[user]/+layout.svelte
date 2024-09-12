@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>{profile.name} • Conduit</title>
+	<title>{profile.name} • Simple Compliance</title>
 </svelte:head>
 
 <div class="profile-page">
