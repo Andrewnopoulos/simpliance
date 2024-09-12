@@ -121,11 +121,11 @@ def run_benchmark(report: Report) -> tuple[bool, str]:
     except FileNotFoundError as e:
         print(f"Error running benchmark: {e}")
         with open(output_file, 'w') as f:
-            f.write(f"<Title>Yay!</Title><h1>{report.benchmark}</h1>")
+            f.write(f"<Title>ERROR</Title><h1>{report.benchmark}</h1>")
     except subprocess.CalledProcessError as e:
         print(f"Error running benchmark: {e}")
         with open(output_file, 'w') as f:
-            f.write(f"<Title>Yay!</Title><h1>{report.benchmark}</h1>")
+            f.write(f"<Title>ERROR</Title><h1>{report.benchmark}</h1>")
     
 
     try:
