@@ -29,6 +29,6 @@ export const actions = {
 
 		if (result.errors) return fail(400, result);
 
-		redirect(303, `/reports/${result.id}`);
+		redirect(303, `/reports/${result.report_id}`);
 	}
 };
