@@ -15,6 +15,7 @@ from settings import (
 )
 
 VALID_BENCHMARKS = [
+    "acsc_essential_eight",
     "audit_manager_control_tower",
     "cis_compute_service_v100",
     "cis_controls_v8_ig1",
@@ -120,12 +121,8 @@ def run_benchmark(report: Report) -> tuple[bool, str]:
         print(f"Benchmark results saved to {output_file}")
     except FileNotFoundError as e:
         print(f"Error running benchmark: {e}")
-        with open(output_file, 'w') as f:
-            f.write(f"<Title>ERROR</Title><h1>{report.benchmark}</h1>")
     except subprocess.CalledProcessError as e:
         print(f"Error running benchmark: {e}")
-        with open(output_file, 'w') as f:
-            f.write(f"<Title>ERROR</Title><h1>{report.benchmark}</h1>")
     
 
     try:
