@@ -1,8 +1,6 @@
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
 	const jwt = event.cookies.get('jwt');
-    console.log("jwt from cookie")
-	console.log(jwt)
     if (jwt) {
         // The JWT is now the raw access token, no need to decode
         event.locals.user = { token: jwt };
@@ -12,8 +10,14 @@ export async function handle({ event, resolve }) {
         try {
             const [header, payload, signature] = jwt.split('.');
             const decodedPayload = JSON.parse(atob(payload));
-            event.locals.user = { ...event.locals.user, ...decodedPayload };
-			// console.log(event.locals.user)
+
+            const currentTimestamp = Math.floor(Date.now() / 1000);
+            if (currentTimestamp > decodedPayload.exp) {
+                event.cookies.delete('jwt', { path: '/' });
+            }
+            else {
+                event.locals.user = { ...event.locals.user, ...decodedPayload };
+            }
         } catch (error) {
             console.error('Error decoding JWT:', error);
         }
