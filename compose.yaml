@@ -47,7 +47,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=http://{BALANCER}/api
+      - API_URL=http://app-host:8000/api
       - ORIGIN=http://${DEPLOY_URL:-localhost:3000}
 
 networks:
