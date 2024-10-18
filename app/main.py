@@ -20,7 +20,7 @@ from test_routes import (
     secure_router
 )
 
-from settings import DB_PATH, BALANCER
+from settings import DB_PATH, BALANCER, DEPLOY_URL
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,7 +44,8 @@ app.add_middleware(
                    "http://127.0.0.1:5173",
                    "http://127.0.0.1:4173",
                    "http://frontend:3000",
-                   f"http://{BALANCER}"
+                   f"http://{BALANCER}",
+                   f"http://{DEPLOY_URL}"
                    ],
     allow_credentials=True,
     allow_methods=["*"],

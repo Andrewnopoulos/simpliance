@@ -9,6 +9,7 @@ connection_path_default = 'aws_connections'
 credential_path_default = 'aws_credentials'
 jwt_encryption_key_default = 'missing_jwt_key'
 balancer_default = 'missing_load_balancer'
+deploy_url_default = 'missing_deploy_url'
 
 RESULTS_PATH =          os.environ.get("RESULTS_PATH", results_path_default)
 DB_PATH =               os.environ.get("DB_PATH", db_path_default)
@@ -17,6 +18,7 @@ AWS_ACCESS_KEY_ID =     os.environ.get("AWS_ACCESS_KEY_ID", aws_access_key_id_de
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", aws_secret_access_key_default)
 JWT_ENCRYPTION_KEY =    os.environ.get("JWT_ENCRYPTION_KEY", jwt_encryption_key_default)
 BALANCER =              os.environ.get("BALANCER", balancer_default)
+DEPLOY_URL =            os.environ.get("DEPLOY_URL", deploy_url_default)
 
 CONNECTIONS_PATH = os.environ.get("CONNECTIONS_PATH", connection_path_default)
 CREDENTIALS_PATH = os.environ.get("CREDENTIALS_PATH", credential_path_default)
